@@ -59,13 +59,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate{
             if let error = error {
                 print("Failed to sign in with google")
             }
-                        return
+            return
         }
         guard let user = user else {
             return
         }
+        
         print ("Did sign in with Google: \(user)")
-
+        
         
         guard let email = user.profile.email,
             let firstName = user.profile.givenName,
@@ -76,9 +77,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate{
         
         DatabaseManager.shared.userExistis(with: email, completion: { exists in
             if !exists{
-                DatabaseManager.shared.insertUser(with: AppUser(firstName: firstName,
-                    lastName: lastName,
-                    emailAddress: email))
+                let appUser = AppUser(firstName: firstName,
+                                      lastName: lastName,
+                                      emailAddress: email)
+                
+                // saving the user email address
+                UserDefaults.standard.set(email, forKey: "email")
+                DatabaseManager.shared.insertUser(with: appUser, completion: { success in
+                    if success {
+                        // upload image
+                        
+                        if user.profile.hasImage {
+                            guard let url = user.profile.imageURL(withDimension: 200) else {
+                                return
+                            }
+                    
+                            URLSession.shared.dataTask(with: url, completionHandler: { data, _, _ in
+                                guard let data = data else {
+                                    return
+                                }
+                                
+                                let filename = appUser.profilePictureFileName
+                                StorageManager.shared.uploadProfilePicture(with: data, fileName: filename, completion: { result in
+                                    switch result {
+                                    case .success(let downloadUrl):
+                                        UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
+                                        print(downloadUrl)
+                                    case .failure(let error):
+                                        print("Storage maanger error: \(error)")
+                                    }
+                                })
+                            }).resume()
+                        }
+                        
+                        
+                    }
+                })
             }
         })
         

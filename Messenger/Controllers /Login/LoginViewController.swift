@@ -213,28 +213,30 @@ class LoginViewController: UIViewController {
         
         // This is where we add the Firebase Log in
         // this is the authentication using email not google
-        FirebaseAuth.Auth.auth().signIn(withEmail: email,
-                                        password: password,
-                                        completion: { [weak self] authResult, error in
-                                        
-                                            guard let strongSelf = self else{
-                                                return
-                                            }
-                                            
-                                            // all UI stuff needs to be done in the main thread
-                                            DispatchQueue.main.async {
-                                                strongSelf.spinner.dismiss()
-                                            }
-                                            
-                                            
-                                            guard let result = authResult, error == nil else{
-                                                print ("fail to log in user with email: \(email)")
-                                                return
-                                            }
-                                            
-                                            let user = result.user
-                                            print("logged in with user: \(user)")
-                                            strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+        FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password, completion: { [weak self] authResult, error in
+            
+            guard let strongSelf = self else{
+                return
+            }
+            
+            // all UI stuff needs to be done in the main thread
+            DispatchQueue.main.async {
+                strongSelf.spinner.dismiss()
+            }
+            
+            
+            guard let result = authResult, error == nil else{
+                print ("fail to log in user with email: \(email)")
+                return
+            }
+            
+            let user = result.user
+            
+            // saving the user email address
+            UserDefaults.standard.set(email, forKey: "email")
+            
+            print("logged in with user: \(user)")
+            strongSelf.navigationController?.dismiss(animated: true, completion: nil)
         })
     }
     
@@ -295,7 +297,7 @@ extension LoginViewController: LoginButtonDelegate{
         // we need to grab data from FB
         
         let facebookRequest = FBSDKLoginKit.GraphRequest(graphPath: "me",
-                                                         parameters: ["fields": "email, name"],
+                                                         parameters: ["fields": "email, first_name, last_name, picture.type(large)"],
                                                          tokenString: token,
                                                          version: nil,
                                                          httpMethod: .get)
@@ -306,28 +308,57 @@ extension LoginViewController: LoginButtonDelegate{
                 return
             }
             
+            print(result)
             // We need to get the email and name fromt the FB graph request
-            guard let userName = result["name"] as? String,
-                let email = result["email"] as? String else{
+            guard let firstName = result["first_name"] as? String,
+                let lastName = result["last_name"] as? String,
+                let email = result["email"] as? String,
+                let picture = result["picture"] as? [String: Any],
+                let data = picture["data"] as? [String: Any],
+                let pictureUrl = data["url"] as? String else{
                     print ("cant get info from FB graph")
                     return
             }
             
-            let nameComponents = userName.components(separatedBy: " ")
-            guard nameComponents.count == 2 else {
-                return
-            }
-            
-            let firstName = nameComponents[0]
-            let lastName = nameComponents[1]
+            // saving the user email address
+            UserDefaults.standard.set(email, forKey: "email")
             
             // checking if user exists, if they do sign in if not add to database
             DatabaseManager.shared.userExistis(with: email, completion: {exists in
                 if !exists {
-                    DatabaseManager.shared.insertUser(with: AppUser(firstName: firstName,
-                                                                    lastName: lastName,
-                                                                    emailAddress: email)
-                    )}
+                    let appUser = AppUser(firstName: firstName,
+                                          lastName: lastName,
+                                          emailAddress: email)
+                    DatabaseManager.shared.insertUser(with: appUser, completion: { success in
+                        if success {
+                            // getting the pic from FB
+                            guard let url = URL(string: pictureUrl) else {
+                                return
+                            }
+                            URLSession.shared.dataTask(with: url, completionHandler: { data, _, _ in
+                                guard let data = data else {
+                                    print("failed to get data from facebook")
+                                    return
+                                }
+                                
+                                // upload image
+                                let fileName = appUser.profilePictureFileName
+                                StorageManager.shared.uploadProfilePicture(with: data, fileName: fileName, completion: { result in
+                                    switch result {
+                                    case .success(let downloadUrl):
+                                        UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
+                                        print(downloadUrl)
+                                    case .failure(let error):
+                                        print("storage manager error: \(error)")
+                                    }
+                                    
+                                })
+                            }).resume()
+                            
+                        }
+                        
+                    })
+                }
             })
             
             // using the token from FB to exchange for firebase auth

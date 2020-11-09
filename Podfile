@@ -8,6 +8,12 @@ target 'Messenger' do
 pod 'Firebase/Core'
 pod 'Firebase/Auth'
 pod 'Firebase/Database'
+pod 'Firebase/Storage'
+pod 'Firebase/Firestore'
+pod 'FirebaseFirestoreSwift'
+pod 'Firebase/InAppMessaging'
+pod 'Firebase/Crashlytics'
+pod 'Firebase/Analytics'
 
 # Facebook sign in 
 pod 'FBSDKLoginKit'
