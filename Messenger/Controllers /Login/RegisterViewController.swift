@@ -249,46 +249,43 @@ class RegisterViewController: UIViewController {
             
             // all UI stuff needs to be done in the main thread
             DispatchQueue.main.async {
-                    strongSelf.spinner.dismiss()
-                }
+                strongSelf.spinner.dismiss()
+            }
             guard !exists else {
                 // this is where the user alredy exists
                 strongSelf.alertUserRegisterError(message: "User with that email already exists")
                 return
             }
             // creating the user with their given email and password
-            FirebaseAuth.Auth.auth().createUser(withEmail: email,
-                                                password: password,
-                                                completion: { authResult, error in
-                                                    
-                                                    guard authResult != nil, error == nil else{
-                                                        print("Error creating user")
-                                                        return
-                                                    }
-                                                    let appUser = AppUser(firstName: firstName,
-                                                                          lastName: lastName,
-                                                                          emailAddress: email)
-                                                    DatabaseManager.shared.insertUser(with: appUser, completion: { success in
-                                                        if success {
-                                                            // upload image
-                                                            guard let image = strongSelf.imageView.image,
-                                                                let data = image.pngData() else {
-                                                                return
-                                                            }
-                                                            let fileName = appUser.profilePictureFileName
-                                                            StorageManager.shared.uploadProfilePicture(with: data, fileName: fileName, completion: { result in
-                                                                switch result {
-                                                                case .success(let downloadUrl):
-                                                                    UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
-                                                                    print(downloadUrl)
-                                                                case .failure(let error):
-                                                                    print("storage manager error: \(error)")
-                                                            }
-                                                                
-                                                        })
-                                                    }
-                                                })
-                                        strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+            FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password, completion: { authResult, error in
+                guard authResult != nil, error == nil else {
+                    print("Error creating user \(error)")
+                    return
+                }
+                let appUser = AppUser(firstName: firstName,
+                                      lastName: lastName,
+                                      emailAddress: email)
+                DatabaseManager.shared.insertUser(with: appUser, completion: { success in
+                    if success {
+                        // upload image
+                        guard let image = strongSelf.imageView.image,
+                            let data = image.pngData() else {
+                                return
+                        }
+                        let fileName = appUser.profilePictureFileName
+                        StorageManager.shared.uploadProfilePicture(with: data, fileName: fileName, completion: { result in
+                            switch result {
+                            case .success(let downloadUrl):
+                                UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
+                                print(downloadUrl)
+                            case .failure(let error):
+                                print("storage manager error: \(error)")
+                            }
+                            
+                        })
+                    }
+                })
+                strongSelf.navigationController?.dismiss(animated: true, completion: nil)
             })
         })
         

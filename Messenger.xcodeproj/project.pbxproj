@@ -16,6 +16,7 @@
 		D626381D2558DDE80021ABAB /* ZodiacStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D62638182558DDE60021ABAB /* ZodiacStore.swift */; };
 		D626381E2558DDE80021ABAB /* PrefStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D62638192558DDE70021ABAB /* PrefStore.swift */; };
 		D626381F2558DDE80021ABAB /* MBTIStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D626381A2558DDE80021ABAB /* MBTIStore.swift */; };
+		D62638212559DDB30021ABAB /* ConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D62638202559DDB30021ABAB /* ConversationTableViewCell.swift */; };
 		D648E5F9254185AB001D2EC1 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D648E5F8254185AB001D2EC1 /* DatabaseManager.swift */; };
 		D690A874253E7A45008973D4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D690A873253E7A45008973D4 /* AppDelegate.swift */; };
 		D690A876253E7A45008973D4 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D690A875253E7A45008973D4 /* SceneDelegate.swift */; };
@@ -62,6 +63,7 @@
 		D62638182558DDE60021ABAB /* ZodiacStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZodiacStore.swift; sourceTree = "<group>"; };
 		D62638192558DDE70021ABAB /* PrefStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrefStore.swift; sourceTree = "<group>"; };
 		D626381A2558DDE80021ABAB /* MBTIStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MBTIStore.swift; sourceTree = "<group>"; };
+		D62638202559DDB30021ABAB /* ConversationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewCell.swift; sourceTree = "<group>"; };
 		D648E5F8254185AB001D2EC1 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		D690A870253E7A45008973D4 /* Messenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Messenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D690A873253E7A45008973D4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -200,6 +202,7 @@
 			children = (
 				D690A8A8253E7B48008973D4 /* Storyboards */,
 				D690A87C253E7A46008973D4 /* Assets.xcassets */,
+				D62638202559DDB30021ABAB /* ConversationTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -447,6 +450,7 @@
 				D690A8AA253E7C4B008973D4 /* LoginViewController.swift in Sources */,
 				D648E5F9254185AB001D2EC1 /* DatabaseManager.swift in Sources */,
 				D690A8AC253E7C55008973D4 /* RegisterViewController.swift in Sources */,
+				D62638212559DDB30021ABAB /* ConversationTableViewCell.swift in Sources */,
 				D626381E2558DDE80021ABAB /* PrefStore.swift in Sources */,
 				D626381F2558DDE80021ABAB /* MBTIStore.swift in Sources */,
 				D690A8B2253E7C87008973D4 /* NewConversationViewController.swift in Sources */,

@@ -212,7 +212,7 @@ class LoginViewController: UIViewController {
         spinner.show(in: view)
         
         // This is where we add the Firebase Log in
-        // this is the authentication using email not google
+        // this is the authentication using email not google email
         FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password, completion: { [weak self] authResult, error in
             
             guard let strongSelf = self else{
@@ -232,8 +232,26 @@ class LoginViewController: UIViewController {
             
             let user = result.user
             
-            // saving the user email address
+            // saving the user email address and name
+            
+            let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
+            DatabaseManager.shared.getDataFor(path: safeEmail, completion: { result in
+                switch result {
+                case .success(let data):
+                    guard let userData = data as? [String: Any],
+                        let firstName = userData["first_name"] as? String,
+                        let lastName = userData["last_name"] as? String else {
+                            return
+                    }
+                    UserDefaults.standard.set("\(firstName) \(lastName)", forKey: "name")
+
+                case .failure(let error):
+                    print("Failed to read data with error \(error)")
+                }
+            })
+
             UserDefaults.standard.set(email, forKey: "email")
+            
             
             print("logged in with user: \(user)")
             strongSelf.navigationController?.dismiss(animated: true, completion: nil)
@@ -320,8 +338,10 @@ extension LoginViewController: LoginButtonDelegate{
                     return
             }
             
-            // saving the user email address
+            // saving the user email address and name
             UserDefaults.standard.set(email, forKey: "email")
+            UserDefaults.standard.set("\(firstName) \(lastName)", forKey: "name")
+            
             
             // checking if user exists, if they do sign in if not add to database
             DatabaseManager.shared.userExistis(with: email, completion: {exists in
