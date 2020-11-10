@@ -74,6 +74,7 @@ extension DatabaseManager {
         })
     }
     
+    // MARK: - Need to fix, if log in twice with FB the user gets added twice to the database 
     // this is what is writing to our data base
     // the email address is the key so no 2 users can have the same email
     // set value is what is writing this info to the firebase database
@@ -470,8 +471,176 @@ extension DatabaseManager {
                 }
     
     /// sending message to a person in an exsisting convo
-    public func sendMessage(to conversation: String, message: Message, completion: @escaping (Bool) -> Void) {
+    // READ THIS PLEASE
+    // this looks terrible right now and needs cleaning up, but the functionality is there, there is just alot of redundent code
+    public func sendMessage(to conversation: String, otherUserEmail: String, name: String, newMessage: Message, completion: @escaping (Bool) -> Void) {
+        // add new message to messages
+
+        guard let myEmail = UserDefaults.standard.value(forKey: "email") as? String else {
+            completion(false)
+            return
+        }
         
+        let currentEmail = DatabaseManager.safeEmail(emailAddress: myEmail)
+        
+        database.child("\(conversation)/messages").observeSingleEvent(of: .value, with: { [weak self] snapshot in
+            guard let strongSelf = self else {
+                return
+            }
+            guard var currentMessages = snapshot.value as? [[String: Any]] else {
+                completion(false)
+                return
+            }
+            
+            let messageDate = newMessage.sentDate
+            let dateString = ChatViewController.dateFormatter.string(from: messageDate)
+            
+            var message = ""
+            
+            switch newMessage.kind {
+                
+            case .text(let messageText):
+                message = messageText
+            case .attributedText(_):
+                break
+            // will prob not impliment this on first release
+            case .photo(_):
+                break
+            case .video(_):
+                break
+            case .location(_):
+                break
+            case .emoji(_):
+                break
+            case .audio(_):
+                break
+            case .contact(_):
+                break
+            case .linkPreview(_):
+                break
+            case .custom(_):
+                break
+            }
+            
+            
+            guard let myEmail = UserDefaults.standard.value(forKey: "email") as? String else {
+                completion(false)
+                return
+            }
+            
+            let currentUserEmail = DatabaseManager.safeEmail(emailAddress: myEmail)
+            
+            let newMessageEntry: [String: Any] = [
+                "id": newMessage.messageId,
+                "type": newMessage.kind.messageKindString,
+                "content": message,
+                "date": dateString,
+                "sender_email": currentUserEmail,
+                "is_read": false,
+                 "name": name
+            ]
+            
+            currentMessages.append(newMessageEntry)
+            strongSelf.database.child("\(conversation)/messages").setValue(currentMessages) {error, _ in
+                guard error == nil else {
+                    completion(false)
+                    return
+                }
+                
+                // updates for the latest message
+                strongSelf.database.child("\(currentEmail)/conversations").observeSingleEvent(of: .value, with: { snapshot in
+                    guard var currentUserConversations = snapshot.value as? [[String: Any]] else {
+                        completion(false)
+                        return
+                    }
+                    
+                    // for the most recent value
+                    let updatedValue: [String: Any] = [
+                        "date": dateString,
+                        "is_read": false,
+                        "message": message,
+                        
+                    ]
+                    
+                    var targetConversation: [String: Any]?
+                    
+                    
+                    
+                    var position = 0
+                    // finding the message to make it the latest message
+                    for conversation_loop in currentUserConversations {
+                        if let currentId = conversation_loop["id"] as? String, currentId == conversation {
+                            targetConversation = conversation_loop
+                            break
+                        }
+                        position += 1
+                    }
+                    targetConversation?["latest_message"] = updatedValue
+                    
+                    guard let finalConversation = targetConversation else {
+                        completion(false)
+                        return
+                    }
+                    currentUserConversations[position] = finalConversation
+                    strongSelf.database.child("\(currentEmail)/conversations").setValue(currentUserConversations, withCompletionBlock: { error, _ in
+                        guard error == nil else {
+                            completion(false)
+                            return
+                        }
+                        
+                        // Update the latest message for the recipient user
+                        strongSelf.database.child("\(otherUserEmail)/conversations").observeSingleEvent(of: .value, with: { snapshot in
+                            guard var otherUserConversations = snapshot.value as? [[String: Any]] else {
+                                completion(false)
+                                return
+                            }
+                            
+                            // for the most recent value
+                            let updatedValue: [String: Any] = [
+                                "date": dateString,
+                                "is_read": false,
+                                "message": message,
+                                
+                            ]
+                            
+                            var targetConversation: [String: Any]?
+                            
+                            
+                            
+                            var position = 0
+                            // finding the message to make it the latest message
+                            for conversation_loop in otherUserConversations {
+                                if let currentId = conversation_loop["id"] as? String, currentId == conversation {
+                                    targetConversation = conversation_loop
+                                    break
+                                }
+                                position += 1
+                            }
+                            targetConversation?["latest_message"] = updatedValue
+                            
+                            guard let finalConversation = targetConversation else {
+                                completion(false)
+                                return
+                            }
+                            otherUserConversations[position] = finalConversation
+                            strongSelf.database.child("\(otherUserEmail)/conversations").setValue(otherUserConversations, withCompletionBlock: { error, _ in
+                                guard error == nil else {
+                                    completion(false)
+                                    return
+                                }
+                                completion(true)
+                            })
+                        })
+                        
+                    })
+                })
+                
+            }
+            
+        })
+        
+        // update sender latest message
+        // update recipient latest message
     }
     
 }

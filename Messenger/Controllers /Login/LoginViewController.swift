@@ -338,13 +338,15 @@ extension LoginViewController: LoginButtonDelegate{
                     return
             }
             
+            let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
+            
             // saving the user email address and name
             UserDefaults.standard.set(email, forKey: "email")
             UserDefaults.standard.set("\(firstName) \(lastName)", forKey: "name")
             
             
             // checking if user exists, if they do sign in if not add to database
-            DatabaseManager.shared.userExistis(with: email, completion: {exists in
+            DatabaseManager.shared.userExistis(with: safeEmail, completion: {exists in
                 if !exists {
                     let appUser = AppUser(firstName: firstName,
                                           lastName: lastName,

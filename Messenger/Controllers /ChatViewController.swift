@@ -101,10 +101,10 @@ class ChatViewController: MessagesViewController {
             super.viewDidLoad()
             
             view.backgroundColor = .red
-            
             messagesCollectionView.messagesDataSource = self
             messagesCollectionView.messagesLayoutDelegate = self
             messagesCollectionView.messagesDisplayDelegate = self
+            messagesCollectionView.scrollToLastItem(animated: true)
             messageInputBar.delegate = self
         }
         
@@ -121,7 +121,7 @@ class ChatViewController: MessagesViewController {
                     self?.messagesCollectionView.reloadDataAndKeepOffset()
                     
                     if shouldScrollToBottom {
-                        self?.messagesCollectionView.scrollToBottom()
+                         self?.messagesCollectionView.scrollToBottom(animated: true)
                     }
                    
                 }
@@ -144,12 +144,15 @@ class ChatViewController: MessagesViewController {
     
     extension ChatViewController: InputBarAccessoryViewDelegate {
         
+        
         func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
             guard !text.replacingOccurrences(of: " ", with: "").isEmpty,
                 let selfSender = self.selfSender,
                 let messageId = createMessageId() else {
                 return
             }
+            
+           
             
             let message = Message(sender: selfSender,
             messageId: messageId,
@@ -169,12 +172,12 @@ class ChatViewController: MessagesViewController {
                        })
                    }
                    else {
-//                       guard let conversationId = conversationID, let name = self.title else {
-//                           return
-//                       }
+                       guard let conversationId = conversationID, let name = self.title else {
+                           return
+                       }
 
                        // append to existing conversation data
-                DatabaseManager.shared.sendMessage(to: otherUserEmail, message: message, completion: { success in
+                DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: otherUserEmail , name: name,newMessage: message, completion: { success in
                            if success {
                                print("message sent")
                            }
@@ -183,6 +186,8 @@ class ChatViewController: MessagesViewController {
                            }
                        })
                    }
+            
+                 inputBar.inputTextView.text = ""
                }
         
         private func createMessageId() -> String? {
@@ -202,6 +207,7 @@ class ChatViewController: MessagesViewController {
 
             return newIdentifier
         }
+        
         
         
         
