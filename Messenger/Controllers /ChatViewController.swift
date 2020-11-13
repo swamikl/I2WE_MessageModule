@@ -99,12 +99,11 @@ class ChatViewController: MessagesViewController {
         
         override func viewDidLoad() {
             super.viewDidLoad()
-            
+            messagesCollectionView.scrollToLastItem(animated: true)
             view.backgroundColor = .red
             messagesCollectionView.messagesDataSource = self
             messagesCollectionView.messagesLayoutDelegate = self
             messagesCollectionView.messagesDisplayDelegate = self
-            messagesCollectionView.scrollToLastItem(animated: true)
             messageInputBar.delegate = self
         }
         
@@ -121,7 +120,8 @@ class ChatViewController: MessagesViewController {
                     self?.messagesCollectionView.reloadDataAndKeepOffset()
                     
                     if shouldScrollToBottom {
-                         self?.messagesCollectionView.scrollToBottom(animated: true)
+                        self?.messagesCollectionView.scrollToBottom(animated: true)
+                        self?.messagesCollectionView.scrollToLastItem(animated: true)
                     }
                    
                 }

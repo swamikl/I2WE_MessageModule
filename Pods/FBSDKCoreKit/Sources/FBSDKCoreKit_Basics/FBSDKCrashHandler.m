@@ -29,7 +29,7 @@
 #define FBSDK_MAX_CRASH_LOGS 5
 #define FBSDK_CRASH_PATH_NAME @"instrument"
 #ifndef FBSDK_VERSION_STRING
- #define FBSDK_VERSION_STRING @"8.0.0"
+ #define FBSDK_VERSION_STRING @"8.1.0"
 #endif
 
 static const int fatalSignals[] =
@@ -48,7 +48,6 @@ static struct sigaction *previousSignalHandlers = NULL;
 static void installSignalsHandler(void);
 static void uninstallSignalsHandler(void);
 static void FBSDKSignalHandler(int signal, siginfo_t *signalInfo, void *userContext);
-static int signalIndex(int signal);
 
 static NSUncaughtExceptionHandler *previousExceptionHandler = NULL;
 static NSString *mappingTableIdentifier = NULL;
@@ -86,8 +85,7 @@ static BOOL _isTurnedOff;
 
 + (void)sendCrashLogs
 {
-  NSArray<id<FBSDKCrashObserving>> *observers = [_observers copy];
-  for (id<FBSDKCrashObserving> observer in observers) {
+  for (id<FBSDKCrashObserving> observer in _observers) {
     if (observer && [observer respondsToSelector:@selector(didReceiveCrashLogs:)]) {
       NSArray<NSDictionary<NSString *, id> *> *filteredCrashLogs = [self filterCrashLogs:observer.prefixes processedCrashLogs:_processedCrashLogs];
       [observer didReceiveCrashLogs:filteredCrashLogs];
@@ -139,22 +137,26 @@ static BOOL _isTurnedOff;
     installSignalsHandler();
     _processedCrashLogs = [self getProcessedCrashLogs];
   });
-  if (![_observers containsObject:observer]) {
-    [_observers addObject:observer];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void) {
-      [self generateMethodMapping:observer];
-    });
-    [self sendCrashLogs];
+  @synchronized(_observers) {
+    if (![_observers containsObject:observer]) {
+      [_observers addObject:observer];
+      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void) {
+        [self generateMethodMapping:observer];
+      });
+      [self sendCrashLogs];
+    }
   }
 }
 
 + (void)removeObserver:(id<FBSDKCrashObserving>)observer
 {
-  if ([_observers containsObject:observer]) {
-    [_observers removeObject:observer];
-    if (_observers.count == 0) {
-      [FBSDKCrashHandler uninstallExceptionsHandler];
-      uninstallSignalsHandler();
+  @synchronized(_observers) {
+    if ([_observers containsObject:observer]) {
+      [_observers removeObject:observer];
+      if (_observers.count == 0) {
+        [FBSDKCrashHandler uninstallExceptionsHandler];
+        uninstallSignalsHandler();
+      }
     }
   }
 }
@@ -211,8 +213,9 @@ static void uninstallSignalsHandler()
   }
 }
 
-static void FBSDKSignalHandler(int signal, siginfo_t *signalInfo, void *userContext)
+static void FBSDKSignalHandler(int sig, siginfo_t *signalInfo, void *userContext)
 {
+  uninstallSignalsHandler();
   NSMutableArray<NSString *> *callStack = [[NSThread callStackSymbols] mutableCopy];
   if (callStack) {
     NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 2)];
@@ -220,27 +223,7 @@ static void FBSDKSignalHandler(int signal, siginfo_t *signalInfo, void *userCont
       [callStack removeObjectsAtIndexes:indexSet];
     }
   }
-  [FBSDKCrashHandler saveSignal:signal withCallStack:callStack];
-
-  int index = signalIndex(signal);
-  if (index > 0) {
-    if (previousSignalHandlers[index].sa_handler != SIG_IGN) {
-      void (*previousSignalHandler)(int, siginfo_t *, void *) = previousSignalHandlers[index].sa_sigaction;
-      if (previousSignalHandler != NULL) {
-        previousSignalHandler(signal, signalInfo, userContext);
-      }
-    }
-  }
-}
-
-static int signalIndex(int signal)
-{
-  for (int i = 0; i < fatalSignalsCount; i++) {
-    if (signal == fatalSignals[i]) {
-      return i;
-    }
-  }
-  return -1;
+  [FBSDKCrashHandler saveSignal:sig withCallStack:callStack];
 }
 
 #pragma mark - Storage
