@@ -92,6 +92,23 @@ class RegisterViewController: UIViewController {
         return field
     }()
     
+    private let ageField: UITextField = {
+        let field = UITextField()
+        field.autocapitalizationType = .none
+        field.autocorrectionType = .no
+        field.returnKeyType = .done // after writing password, we want to let users into the app
+        field.layer.cornerRadius = 12
+        field.layer.borderWidth = 1
+        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.placeholder = "Age"
+        // to make the text not flush with the box
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
+        field.leftViewMode = .always
+        field.backgroundColor = .white
+        field.isSecureTextEntry = false // to get * for password
+        return field
+    }()
+    
     
     
     // for the blank person to show
@@ -146,6 +163,7 @@ class RegisterViewController: UIViewController {
         scrollView.addSubview(imageView)
         scrollView.addSubview(firstNameField)
         scrollView.addSubview(lastNameField)
+        scrollView.addSubview(ageField)
         scrollView.addSubview(emailField)
         scrollView.addSubview(passwordField)
         scrollView.addSubview(registerButton)
@@ -196,8 +214,13 @@ class RegisterViewController: UIViewController {
                                      width: scrollView.width - 60,
                                      height: 52)
         
+        ageField.frame = CGRect(x: 30,
+                                     y: lastNameField.bottom+10,
+                                     width: scrollView.width - 60,
+                                     height: 52)
+        
         emailField.frame = CGRect(x: 30,
-                                  y: lastNameField.bottom+10,
+                                  y: ageField.bottom+10,
                                   width: scrollView.width - 60,
                                   height: 52)
         
@@ -222,13 +245,16 @@ class RegisterViewController: UIViewController {
         passwordField.resignFirstResponder()
         firstNameField.resignFirstResponder()
         lastNameField.resignFirstResponder()
+        ageField.resignFirstResponder()
         
         guard let firstName = firstNameField.text,
             let lastName = lastNameField.text,
+            let age = ageField.text,
             let email = emailField.text,
             let password = passwordField.text,
             !email.isEmpty,
             !firstName.isEmpty,
+            !age.isEmpty,
             !lastName.isEmpty,
             !password.isEmpty,
             password.count >= 6
@@ -264,7 +290,9 @@ class RegisterViewController: UIViewController {
                 }
                 let appUser = AppUser(firstName: firstName,
                                       lastName: lastName,
-                                      emailAddress: email)
+                                      emailAddress: email,
+                                      uid: "",
+                                      age: age)
                 DatabaseManager.shared.insertUser(with: appUser, completion: { success in
                     if success {
                         // upload image

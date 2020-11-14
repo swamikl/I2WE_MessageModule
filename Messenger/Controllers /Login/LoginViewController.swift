@@ -126,7 +126,7 @@ class LoginViewController: UIViewController {
         emailField.delegate = self
         passwordField.delegate = self
         
-        facebookButton.delegate = self
+        // facebookButton.delegate = self
         
         
         
@@ -300,109 +300,111 @@ extension LoginViewController: UITextFieldDelegate{
 
 // if the user signs in through FB, we need to get that data and put that into our firebase database
 // This extention is handeling that
-extension LoginViewController: LoginButtonDelegate{
-    func loginButtonDidLogOut(_ loginButton: FBLoginButton) {
-        // no operation
-    }
+//extension LoginViewController: LoginButtonDelegate{
+//    func loginButtonDidLogOut(_ loginButton: FBLoginButton) {
+//        // no operation
+//    }
+//
+//    func loginButton(_ loginButton: FBLoginButton, didCompleteWith result: LoginManagerLoginResult?, error: Error?) {
+//        guard let token = result?.token?.tokenString else {
+//            print ("User could not login with FB")
+//            return
+//        }
+        
+//        // to handel the FB login
+//        // we need to grab data from FB
+//
+//        let facebookRequest = FBSDKLoginKit.GraphRequest(graphPath: "me",
+//                                                         parameters: ["fields": "email, first_name, last_name, picture.type(large)"],
+//                                                         tokenString: token,
+//                                                         version: nil,
+//                                                         httpMethod: .get)
+//
+//        facebookRequest.start(completionHandler: {_, result, error in
+//            guard let result = result as? [String: Any], error == nil else {
+//                print ("Failed FB graph request")
+//                return
+//            }
+//
+//            print(result)
+//            // We need to get the email and name fromt the FB graph request
+//            guard let firstName = result["first_name"] as? String,
+//                let lastName = result["last_name"] as? String,
+//                let email = result["email"] as? String,
+//                let picture = result["picture"] as? [String: Any],
+//                let data = picture["data"] as? [String: Any],
+//                let pictureUrl = data["url"] as? String else{
+//                    print ("cant get info from FB graph")
+//                    return
+//            }
+//
+//            let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
+//
+//            // saving the user email address and name
+//            UserDefaults.standard.set(email, forKey: "email")
+//            UserDefaults.standard.set("\(firstName) \(lastName)", forKey: "name")
+//
+//
+//            // checking if user exists, if they do sign in if not add to database
+//            DatabaseManager.shared.userExistis(with: safeEmail, completion: {exists in
+//                if !exists {
+//                    let appUser = AppUser(firstName: firstName,
+//                                          lastName: lastName,
+//                                          emailAddress: email,
+//                                        uid: "",
+//                                        age: )
+//                    DatabaseManager.shared.insertUser(with: appUser, completion: { success in
+//                        if success {
+//                            // getting the pic from FB
+//                            guard let url = URL(string: pictureUrl) else {
+//                                return
+//                            }
+//                            URLSession.shared.dataTask(with: url, completionHandler: { data, _, _ in
+//                                guard let data = data else {
+//                                    print("failed to get data from facebook")
+//                                    return
+//                                }
+//
+//                                // upload image
+//                                let fileName = appUser.profilePictureFileName
+//                                StorageManager.shared.uploadProfilePicture(with: data, fileName: fileName, completion: { result in
+//                                    switch result {
+//                                    case .success(let downloadUrl):
+//                                        UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
+//                                        print(downloadUrl)
+//                                    case .failure(let error):
+//                                        print("storage manager error: \(error)")
+//                                    }
+//
+//                                })
+//                            }).resume()
+//
+//                        }
+//
+//                    })
+//                }
+//            })
+//
+//            // using the token from FB to exchange for firebase auth
+//            let credential = FacebookAuthProvider.credential(withAccessToken: token)
+//            FirebaseAuth.Auth.auth().signIn(with: credential, completion: { [weak self] authResult, error in
+//
+//                guard let strongSelf = self else {
+//                    return
+//                }
+//                guard authResult != nil, error == nil else {
+//                    if let error = error {
+//                        print ("Could not login with FB - \(error)")
+//                    }
+//                    return
+//                }
+//
+//                print ("User logged in with FB")
+//                strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+//            })
+//        })
+//
+//
+//    }
     
-    func loginButton(_ loginButton: FBLoginButton, didCompleteWith result: LoginManagerLoginResult?, error: Error?) {
-        guard let token = result?.token?.tokenString else {
-            print ("User could not login with FB")
-            return
-        }
-        
-        // to handel the FB login
-        // we need to grab data from FB
-        
-        let facebookRequest = FBSDKLoginKit.GraphRequest(graphPath: "me",
-                                                         parameters: ["fields": "email, first_name, last_name, picture.type(large)"],
-                                                         tokenString: token,
-                                                         version: nil,
-                                                         httpMethod: .get)
-        
-        facebookRequest.start(completionHandler: {_, result, error in
-            guard let result = result as? [String: Any], error == nil else {
-                print ("Failed FB graph request")
-                return
-            }
-            
-            print(result)
-            // We need to get the email and name fromt the FB graph request
-            guard let firstName = result["first_name"] as? String,
-                let lastName = result["last_name"] as? String,
-                let email = result["email"] as? String,
-                let picture = result["picture"] as? [String: Any],
-                let data = picture["data"] as? [String: Any],
-                let pictureUrl = data["url"] as? String else{
-                    print ("cant get info from FB graph")
-                    return
-            }
-            
-            let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
-            
-            // saving the user email address and name
-            UserDefaults.standard.set(email, forKey: "email")
-            UserDefaults.standard.set("\(firstName) \(lastName)", forKey: "name")
-            
-            
-            // checking if user exists, if they do sign in if not add to database
-            DatabaseManager.shared.userExistis(with: safeEmail, completion: {exists in
-                if !exists {
-                    let appUser = AppUser(firstName: firstName,
-                                          lastName: lastName,
-                                          emailAddress: email)
-                    DatabaseManager.shared.insertUser(with: appUser, completion: { success in
-                        if success {
-                            // getting the pic from FB
-                            guard let url = URL(string: pictureUrl) else {
-                                return
-                            }
-                            URLSession.shared.dataTask(with: url, completionHandler: { data, _, _ in
-                                guard let data = data else {
-                                    print("failed to get data from facebook")
-                                    return
-                                }
-                                
-                                // upload image
-                                let fileName = appUser.profilePictureFileName
-                                StorageManager.shared.uploadProfilePicture(with: data, fileName: fileName, completion: { result in
-                                    switch result {
-                                    case .success(let downloadUrl):
-                                        UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
-                                        print(downloadUrl)
-                                    case .failure(let error):
-                                        print("storage manager error: \(error)")
-                                    }
-                                    
-                                })
-                            }).resume()
-                            
-                        }
-                        
-                    })
-                }
-            })
-            
-            // using the token from FB to exchange for firebase auth
-            let credential = FacebookAuthProvider.credential(withAccessToken: token)
-            FirebaseAuth.Auth.auth().signIn(with: credential, completion: { [weak self] authResult, error in
-                
-                guard let strongSelf = self else {
-                    return
-                }
-                guard authResult != nil, error == nil else {
-                    if let error = error {
-                        print ("Could not login with FB - \(error)")
-                    }
-                    return
-                }
-                
-                print ("User logged in with FB")
-                strongSelf.navigationController?.dismiss(animated: true, completion: nil)
-            })
-        })
-        
-        
-    }
-    
-}
+//}

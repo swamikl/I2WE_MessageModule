@@ -81,8 +81,18 @@ extension DatabaseManager {
     /// inserts new user to database
     public func insertUser(with user: AppUser, completion: @escaping (Bool) -> Void) {
         database.child(user.safeEmail).setValue([
-            "first_name": user.firstName,
-            "last_name": user.lastName
+           FBKeys.User.firstName: user.firstName,
+            FBKeys.User.lastName: user.lastName,
+            FBKeys.User.age: user.age,
+            FBKeys.User.imgs: user.imgs,
+            FBKeys.User.pronouns: user.pronouns,
+            FBKeys.User.school: user.school,
+            FBKeys.User.bio: user.bio,
+            FBKeys.User.emoji: user.emoji,
+            FBKeys.User.zodiac: user.zodiac,
+            FBKeys.User.mbti: user.mbti,
+            FBKeys.User.swiped: user.swiped,
+            FBKeys.User.swipedBy: user.swipedBy
             ], withCompletionBlock: { error, _ in
                 guard error == nil else {
                     print("failed ot write to database")
@@ -652,6 +662,32 @@ struct AppUser {
     let firstName: String
     let lastName: String
     let emailAddress: String
+    let uid: String
+    // Mark fix to int for age
+    let age: String
+    
+    // opts
+    var imgs: [Int:UIImage] = [:]
+    var pronouns: Int = -1
+    var school: Int = -1
+    var bio: String = ""
+    var emoji: String = ""
+    var zodiac: Int = -1// -1=none
+    var mbti: Int = -1 // Meyers-Briggs
+    
+    // search prefs
+    var genderPref: [Int] = [] // 0=everyone, 1=men, 2=women
+    var agePref: [Int] = [] // 70+
+    var locPref: [[String]] = []
+    var zodPref: [Int] = []
+    var mbtiPref: [Int] = []
+    var emojiPref: [String] = []
+
+    // matching
+    var swiped: [String] = []
+    var swipedBy: [String] = []
+    
+   
     
     var safeEmail: String {
         // making this inside so we can just use this property when we use this struct
@@ -663,5 +699,6 @@ struct AppUser {
         // all the profile pictures are saved in the format shown below
         return "\(safeEmail)_profile_picture.png"
     }
+    
 }
 
