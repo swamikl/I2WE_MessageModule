@@ -10,7 +10,8 @@ import UIKit
 import FirebaseAuth
 import JGProgressHUD
 
-class RegisterViewController: UIViewController {
+// UIPickerViewDelegate, UIPickerViewDataSource
+class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     
     private let spinner = JGProgressHUD(style: .light)
     
@@ -92,11 +93,11 @@ class RegisterViewController: UIViewController {
         return field
     }()
     
+    
     private let ageField: UITextField = {
         let field = UITextField()
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
-        field.returnKeyType = .done // after writing password, we want to let users into the app
         field.layer.cornerRadius = 12
         field.layer.borderWidth = 1
         field.layer.borderColor = UIColor.systemPink.cgColor
@@ -105,11 +106,202 @@ class RegisterViewController: UIViewController {
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
         field.leftViewMode = .always
         field.backgroundColor = .white
-        field.isSecureTextEntry = false // to get * for password
         return field
     }()
     
+    private let schoolField: UITextField = {
+        let field = UITextField()
+        field.autocapitalizationType = .none
+        field.autocorrectionType = .no
+        field.layer.cornerRadius = 12
+        field.layer.borderWidth = 1
+        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.placeholder = "School"
+        // to make the text not flush with the box
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
+        field.leftViewMode = .always
+        field.backgroundColor = .white
+        return field
+    }()
     
+    private let genderField: UITextField = {
+        let field = UITextField()
+        field.autocapitalizationType = .none
+        field.autocorrectionType = .no
+        field.layer.cornerRadius = 12
+        field.layer.borderWidth = 1
+        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.placeholder = "Gender"
+        // to make the text not flush with the box
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
+        field.leftViewMode = .always
+        field.backgroundColor = .white
+        return field
+    }()
+    
+    private let sexualityField: UITextField = {
+        let field = UITextField()
+        field.autocapitalizationType = .none
+        field.autocorrectionType = .no
+        field.layer.cornerRadius = 12
+        field.layer.borderWidth = 1
+        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.placeholder = "Sexuality"
+        // to make the text not flush with the box
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
+        field.leftViewMode = .always
+        field.backgroundColor = .white
+        return field
+    }()
+    
+    private let majorField: UITextField = {
+        let field = UITextField()
+        field.autocapitalizationType = .none
+        field.autocorrectionType = .no
+        field.layer.cornerRadius = 12
+        field.layer.borderWidth = 1
+        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.placeholder = "Major"
+        // to make the text not flush with the box
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
+        field.leftViewMode = .always
+        field.backgroundColor = .white
+        return field
+    }()
+    
+    // the sexuality, gender, school, and majors are pickerviews
+    
+    var schoolChoice: String?
+    var schoolList = ["HMC", "CMC", "Pomona", "Scripps", "Pitzer", "Other"]
+    
+    var genderChoice: String?
+    var genderList = ["Male", "Female", "Transgender", "Other"]
+    
+    var sexualityChoice: String?
+    var sexualityList = ["Hetrosexual", "Homosexual", "Bi-sexual", "Other"]
+    
+    var majorChoice: String?
+    var majorList = [ "Computer Science", "Engineering", "Philosophy", "Buisiness", "Economics","Math", "Psychology", "Finance", "History", "Art",
+                     "Anthropology", "Chemistry",  "Music", "Physics",  "Other"]
+    
+    
+    let genderPicker = UIPickerView()
+    let sexualityPicker = UIPickerView()
+    let schoolPicker = UIPickerView()
+    let majorPicker = UIPickerView()
+    
+    
+    func createSchoolPickerView()
+         {
+             schoolPicker.delegate = self
+             schoolField.inputView = schoolPicker
+             schoolPicker.backgroundColor = UIColor.white
+             
+         }
+    
+    func createSexualityPickerView()
+    {
+        sexualityPicker.delegate = self
+        sexualityField.inputView = sexualityPicker
+        sexualityPicker.backgroundColor = UIColor.white
+        
+    }
+    
+    func createGenderPickerView()
+      {
+          genderPicker.delegate = self
+          genderField.inputView = genderPicker
+          genderPicker.backgroundColor = UIColor.white
+          
+      }
+    
+    func createMajorPickerView()
+    {
+        majorPicker.delegate = self
+        majorField.inputView = majorPicker
+        majorPicker.backgroundColor = UIColor.white
+        
+    }
+    
+    func createToolbar()
+    {
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        toolbar.tintColor = UIColor.red
+        toolbar.backgroundColor = UIColor.white
+        let doneButton = UIBarButtonItem(title: "Done", style: .plain, target: self,action: #selector(RegisterViewController.closePickerView))
+        toolbar.setItems([doneButton], animated: false)
+        toolbar.isUserInteractionEnabled = true
+        schoolField.inputAccessoryView = toolbar
+        genderField.inputAccessoryView = toolbar
+        sexualityField.inputAccessoryView = toolbar
+        majorField.inputAccessoryView = toolbar
+    }
+    
+    @objc func closePickerView()
+    {
+        view.endEditing(true)
+    }
+    
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+            return 1
+        }
+        
+        func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+            var countrows = 4
+            if pickerView == sexualityPicker {
+                countrows = self.sexualityList.count
+            } else if pickerView == genderPicker {
+                countrows = self.genderList.count
+            } else if pickerView == majorPicker {
+                countrows = self.majorList.count
+            } else if pickerView == self.schoolPicker {
+                countrows = self.schoolList.count
+            }
+            return countrows
+        }
+        
+        func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?
+        {
+            if pickerView == sexualityPicker {
+                let titleRow = sexualityList[row]
+                 return titleRow
+            } else if pickerView == genderPicker {
+                let titleRow = genderList[row]
+                return titleRow
+            } else if pickerView == schoolPicker {
+                let titleRow = schoolList[row]
+                return titleRow
+            } else if pickerView == majorPicker {
+                let titleRow = majorList[row]
+                return titleRow
+            }
+
+            return ""
+        }
+        
+        func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+            
+            if pickerView == sexualityPicker {
+                self.sexualityField.text = self.sexualityList[row]
+            } else if pickerView == genderPicker {
+                self.genderField.text = self.genderList[row]
+            } else if pickerView == schoolPicker {
+                self.schoolField.text = self.schoolList[row]
+            } else if pickerView == majorPicker {
+                self.majorField.text = self.majorList[row]
+            }
+    }
+        
+        func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+            return 200.0
+        }
+        
+        func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+            return 60.0
+        }
+
     
     // for the blank person to show
     private let imageView: UIImageView = {
@@ -166,6 +358,18 @@ class RegisterViewController: UIViewController {
         scrollView.addSubview(ageField)
         scrollView.addSubview(emailField)
         scrollView.addSubview(passwordField)
+        // the picker views
+        scrollView.addSubview(schoolField)
+        createSchoolPickerView()
+        createToolbar()
+        scrollView.addSubview(majorField)
+        createMajorPickerView()
+        scrollView.addSubview(genderField)
+        createGenderPickerView()
+        scrollView.addSubview(sexualityField)
+        createSexualityPickerView()
+        
+        // the register button
         scrollView.addSubview(registerButton)
         
         // to make the image userinteractable
@@ -215,12 +419,32 @@ class RegisterViewController: UIViewController {
                                      height: 52)
         
         ageField.frame = CGRect(x: 30,
-                                     y: lastNameField.bottom+10,
-                                     width: scrollView.width - 60,
-                                     height: 52)
+                                y: lastNameField.bottom+10,
+                                width: scrollView.width - 60,
+                                height: 52)
+        
+        schoolField.frame = CGRect(x: 30,
+                                       y: ageField.bottom+10,
+                                       width: scrollView.width - 60,
+                                       height: 52)
+        majorField.frame = CGRect(x: 30,
+                                   y: schoolField.bottom+10,
+                                   width: scrollView.width - 60,
+                                   height: 52)
+        
+        genderField.frame = CGRect(x: 30,
+                                y: majorField.bottom+10,
+                                width: scrollView.width - 60,
+                                height: 52)
+        
+        sexualityField.frame = CGRect(x: 30,
+                                    y: genderField.bottom+10,
+                                    width: scrollView.width - 60,
+                                    height: 52)
+        
         
         emailField.frame = CGRect(x: 30,
-                                  y: ageField.bottom+10,
+                                  y: sexualityField.bottom+10,
                                   width: scrollView.width - 60,
                                   height: 52)
         
@@ -228,6 +452,7 @@ class RegisterViewController: UIViewController {
                                      y: emailField.bottom + 10,
                                      width: scrollView.width - 60,
                                      height: 52)
+        
         
         registerButton.frame = CGRect(x: 30,
                                       y: passwordField.bottom + 10,
@@ -252,10 +477,17 @@ class RegisterViewController: UIViewController {
             let age = ageField.text,
             let email = emailField.text,
             let password = passwordField.text,
+            let gender = genderField.text,
+            let school = schoolField.text,
+            let sexuality = sexualityField.text,
+            let major = majorField.text,
             !email.isEmpty,
             !firstName.isEmpty,
             !age.isEmpty,
             !lastName.isEmpty,
+            !gender.isEmpty,
+            !sexuality.isEmpty,
+            !major.isEmpty,
             !password.isEmpty,
             password.count >= 6
             else{
@@ -292,7 +524,11 @@ class RegisterViewController: UIViewController {
                                       lastName: lastName,
                                       emailAddress: email,
                                       uid: "",
-                                      age: age)
+                                      age: age,
+                                      gender: gender,
+                                      sexualtiy: sexuality,
+                                      school: school,
+                                      major: major)
                 DatabaseManager.shared.insertUser(with: appUser, completion: { success in
                     if success {
                         // upload image
@@ -353,8 +589,17 @@ extension RegisterViewController: UITextFieldDelegate{
         else if textField == lastNameField {
             emailField.becomeFirstResponder()
         }
-        else if textField == emailField {
-            passwordField.becomeFirstResponder()
+        else if textField == ageField {
+            schoolField.becomeFirstResponder()
+        }
+        else if textField == schoolField {
+            genderField.becomeFirstResponder()
+        }
+        else if textField == genderField {
+            sexualityField.becomeFirstResponder()
+        }
+        else if textField == sexualityField {
+            emailField.becomeFirstResponder()
         }
         else if textField == passwordField {
             registerButtonTapped()
@@ -362,6 +607,8 @@ extension RegisterViewController: UITextFieldDelegate{
         return true
     }
 }
+
+
 
 // for choosing the picture or taking a picture for the profile picture
 // when users want to choose a profile pic, they get options on how to choose it

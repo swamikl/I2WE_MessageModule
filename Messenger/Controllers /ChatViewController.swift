@@ -126,7 +126,7 @@ class ChatViewController: MessagesViewController {
                    
                 }
                 
-            case .failure(let error):
+            case .failure(let _):
                 print("could not get messages")
             }
         })
@@ -148,11 +148,10 @@ class ChatViewController: MessagesViewController {
         func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
             guard !text.replacingOccurrences(of: " ", with: "").isEmpty,
                 let selfSender = self.selfSender,
-                let messageId = createMessageId() else {
+                let messageId = createMessageId(),
+                let conversationId = createChatId() else {
                 return
             }
-            
-           
             
             let message = Message(sender: selfSender,
             messageId: messageId,
@@ -208,6 +207,22 @@ class ChatViewController: MessagesViewController {
             return newIdentifier
         }
         
+        private func createChatId() -> String? {
+                   // making a random message id with date, otherUesrEmail, senderEmail, and a randomInt
+                   
+                   // getting the email of the person currently using the app
+                   guard let currentUserEmail = UserDefaults.standard.value(forKey: "email") as? String else {
+                       return nil
+                   }
+
+                   let safeCurrentEmail = DatabaseManager.safeEmail(emailAddress: currentUserEmail)
+
+                   let newIdentifier = "\(otherUserEmail)_\(safeCurrentEmail)"
+
+                   print("created conversation id: \(newIdentifier)")
+
+                   return newIdentifier
+               }
         
         
         

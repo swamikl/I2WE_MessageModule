@@ -139,8 +139,8 @@ class LoginViewController: UIViewController {
         scrollView.addSubview(emailField)
         scrollView.addSubview(passwordField)
         scrollView.addSubview(loginButton)
-        scrollView.addSubview(facebookButton)
-        scrollView.addSubview(googleLogInButton)
+        // scrollView.addSubview(facebookButton)
+        // scrollView.addSubview(googleLogInButton)
     }
     
     // if we hear the notification, we want to deinitialize for memory sake
@@ -181,15 +181,15 @@ class LoginViewController: UIViewController {
                                    width: scrollView.width - 60,
                                    height: 52)
         
-        facebookButton.frame = CGRect(x: 30,
-                                      y: loginButton.bottom + 10,
-                                      width: scrollView.width - 60,
-                                      height: 52)
-        
-        googleLogInButton.frame = CGRect(x: 30,
-                                         y: facebookButton.bottom + 10,
-                                         width: scrollView.width - 60,
-                                         height: 52)
+//        facebookButton.frame = CGRect(x: 30,
+//                                      y: loginButton.bottom + 10,
+//                                      width: scrollView.width - 60,
+//                                      height: 52)
+//
+//        googleLogInButton.frame = CGRect(x: 30,
+//                                         y: facebookButton.bottom + 10,
+//                                         width: scrollView.width - 60,
+//                                         height: 52)
     }
     
     
