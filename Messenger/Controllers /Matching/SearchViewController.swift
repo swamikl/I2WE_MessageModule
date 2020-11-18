@@ -10,19 +10,17 @@ import UIKit
 import JGProgressHUD
 
 class SearchViewController: UIViewController {
-
-    
     
     private let spinner = JGProgressHUD(style: .light)
-    
+
     // container for scrolling in case of small devices, we might not be able to fit everything
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.clipsToBounds = true
         return scrollView
     }()
-    
-    private let testField: UITextField = {
+
+    private let ageField: UITextField = {
         let field = UITextField()
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
@@ -30,7 +28,39 @@ class SearchViewController: UIViewController {
         field.layer.cornerRadius = 12
         field.layer.borderWidth = 1
         field.layer.borderColor = UIColor.systemPink.cgColor
-        field.placeholder = "Test Test"
+        field.placeholder = "Age"
+        // to make the text not flush with the box
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
+        field.leftViewMode = .always
+        field.backgroundColor = .white
+        return field
+    }()
+    
+    private let genderField: UITextField = {
+        let field = UITextField()
+        field.autocapitalizationType = .none
+        field.autocorrectionType = .no
+        field.returnKeyType = .continue
+        field.layer.cornerRadius = 12
+        field.layer.borderWidth = 1
+        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.placeholder = "Gender"
+        // to make the text not flush with the box
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
+        field.leftViewMode = .always
+        field.backgroundColor = .white
+        return field
+    }()
+    
+    private let mbField: UITextField = {
+        let field = UITextField()
+        field.autocapitalizationType = .none
+        field.autocorrectionType = .no
+        field.returnKeyType = .continue
+        field.layer.cornerRadius = 12
+        field.layer.borderWidth = 1
+        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.placeholder = "Meyers Brigg Type"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
         field.leftViewMode = .always
@@ -44,22 +74,24 @@ class SearchViewController: UIViewController {
            imageView.contentMode = .scaleAspectFit
            return imageView
        }()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         // Do any additional setup after loading the view.
-        
+
         view.addSubview(scrollView)
-        scrollView.addSubview(testField)
+        scrollView.addSubview(ageField)
+        scrollView.addSubview(genderField)
+        scrollView.addSubview(mbField)
         scrollView.addSubview(imageView)
-        
+
     }
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         scrollView.frame = view.bounds
-        
+
         // the view.width comes from the extenstions.swift file
         let size = scrollView.width/3
         // the logo size
@@ -67,15 +99,24 @@ class SearchViewController: UIViewController {
                                  y: 20,
                                  width: size,
                                  height: size)
-        
+
         // using the standard values for the text boxes and stuff, can change to make look better
-        testField.frame = CGRect(x: 30,
+        ageField.frame = CGRect(x: 30,
                                   y: imageView.bottom+10,
                                   width: scrollView.width - 60,
                                   height: 52)
-        
+        genderField.frame = CGRect(x: 30,
+                                  y: ageField.bottom+10,
+                                  width: scrollView.width - 60,
+                                  height: 52)
+        mbField.frame = CGRect(x: 30,
+                                  y: genderField.bottom+10,
+                                  width: scrollView.width - 60,
+                                  height: 52)
+
+
     }
-    
+
 
 
 
