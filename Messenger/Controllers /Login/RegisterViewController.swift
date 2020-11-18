@@ -181,7 +181,7 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     var sexualityList = ["Hetrosexual", "Homosexual", "Bi-sexual", "Other"]
     
     var majorChoice: String?
-    var majorList = [ "Computer Science", "Engineering", "Philosophy", "Buisiness", "Economics","Math", "Psychology", "Finance", "History", "Art",
+    var majorList = [ "Engineering", "Computer Science", "Philosophy", "Buisiness", "Economics","Math", "Psychology", "Finance", "History", "Art",
                      "Anthropology", "Chemistry",  "Music", "Physics",  "Other"]
     
     
@@ -471,6 +471,10 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         firstNameField.resignFirstResponder()
         lastNameField.resignFirstResponder()
         ageField.resignFirstResponder()
+        sexualityField.resignFirstResponder()
+        genderField.resignFirstResponder()
+        schoolField.resignFirstResponder()
+        majorField.resignFirstResponder()
         
         guard let firstName = firstNameField.text,
             let lastName = lastNameField.text,
