@@ -187,6 +187,12 @@ extension DatabaseManager {
             })
     }
     
+    // Now, this is the schema.
+    // We populate 'swiped' user's swipedBy array with UID of current user who swiped.
+    // Then, we push as a new entry using insertUser
+    
+    // We fetch the swipedBy array users to get the users who appear in our inbox
+    
     public func getAllUsers(completion: @escaping (Result<[[String: String]], Error>) -> Void) {
         database.child("users").observeSingleEvent(of: .value, with: { snapshot in
             guard let value = snapshot.value as? [[String: String]] else {
