@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		4A196A5DF0A9CF86E7521C9D /* Pods_Messenger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32D389D11DF367F6B30F0F91 /* Pods_Messenger.framework */; };
-		D61DD158256072FB009DEFB8 /* FBAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61DD151256072FA009DEFB8 /* FBAuthError.swift */; };
-		D61DD15A256072FB009DEFB8 /* FBFirestoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61DD153256072FA009DEFB8 /* FBFirestoreError.swift */; };
 		D61DD15C256072FB009DEFB8 /* FBKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61DD155256072FB009DEFB8 /* FBKeys.swift */; };
 		D626380F25572A070021ABAB /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D626380E25572A070021ABAB /* ChatViewController.swift */; };
 		D62638112557B5C10021ABAB /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D62638102557B5C10021ABAB /* StorageManager.swift */; };
@@ -54,8 +52,6 @@
 		2B8940851B8E6AC3E35CD29A /* Pods-Messenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Messenger.release.xcconfig"; path = "Target Support Files/Pods-Messenger/Pods-Messenger.release.xcconfig"; sourceTree = "<group>"; };
 		2FEC31F8F06B17E637193A3D /* Pods-Messenger.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Messenger.debug.xcconfig"; path = "Target Support Files/Pods-Messenger/Pods-Messenger.debug.xcconfig"; sourceTree = "<group>"; };
 		32D389D11DF367F6B30F0F91 /* Pods_Messenger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Messenger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D61DD151256072FA009DEFB8 /* FBAuthError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FBAuthError.swift; sourceTree = "<group>"; };
-		D61DD153256072FA009DEFB8 /* FBFirestoreError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FBFirestoreError.swift; sourceTree = "<group>"; };
 		D61DD155256072FB009DEFB8 /* FBKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FBKeys.swift; sourceTree = "<group>"; };
 		D626380E25572A070021ABAB /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		D62638102557B5C10021ABAB /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
@@ -126,16 +122,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		D61DD14E256072D4009DEFB8 /* FB Stuff */ = {
-			isa = PBXGroup;
-			children = (
-				D61DD151256072FA009DEFB8 /* FBAuthError.swift */,
-				D61DD153256072FA009DEFB8 /* FBFirestoreError.swift */,
-				D61DD155256072FB009DEFB8 /* FBKeys.swift */,
-			);
-			path = "FB Stuff";
-			sourceTree = "<group>";
-		};
 		D62638122558DCA80021ABAB /* Matching */ = {
 			isa = PBXGroup;
 			children = (
@@ -181,7 +167,6 @@
 		D690A8A3253E7B0C008973D4 /* Controllers  */ = {
 			isa = PBXGroup;
 			children = (
-				D61DD14E256072D4009DEFB8 /* FB Stuff */,
 				D62638122558DCA80021ABAB /* Matching */,
 				D690A877253E7A45008973D4 /* ConversationsViewController.swift */,
 				D690A8B5253E7CF6008973D4 /* Login */,
@@ -227,6 +212,7 @@
 				D690A8B6253E82E8008973D4 /* Extensions.swift */,
 				D648E5F8254185AB001D2EC1 /* DatabaseManager.swift */,
 				D62638102557B5C10021ABAB /* StorageManager.swift */,
+				D61DD155256072FB009DEFB8 /* FBKeys.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -443,7 +429,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D61DD158256072FB009DEFB8 /* FBAuthError.swift in Sources */,
 				D66649E82564FC2200FF9FA9 /* ProfileViewModel.swift in Sources */,
 				D690A8AA253E7C4B008973D4 /* LoginViewController.swift in Sources */,
 				D61DD15C256072FB009DEFB8 /* FBKeys.swift in Sources */,
@@ -458,7 +443,6 @@
 				D690A8B4253E7C95008973D4 /* ProfileViewController.swift in Sources */,
 				D690A876253E7A45008973D4 /* SceneDelegate.swift in Sources */,
 				D6263823255B145E0021ABAB /* SearchViewController.swift in Sources */,
-				D61DD15A256072FB009DEFB8 /* FBFirestoreError.swift in Sources */,
 				D626380F25572A070021ABAB /* ChatViewController.swift in Sources */,
 				D690A8AE253E7C6C008973D4 /* PhotoViewerViewController.swift in Sources */,
 				D62638112557B5C10021ABAB /* StorageManager.swift in Sources */,

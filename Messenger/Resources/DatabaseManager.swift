@@ -10,7 +10,6 @@
 // this is so that we will not have redundent code in all of the controllers
 
 
-
 import Foundation
 import FirebaseDatabase
 
@@ -91,7 +90,7 @@ extension DatabaseManager {
             FBKeys.User.school: user.school,
             FBKeys.User.major: user.major,
             FBKeys.User.gender: user.gender,
-            FBKeys.User.sexuality: user.sexualtiy,
+            FBKeys.User.sexuality: user.sexuality,
             FBKeys.User.email: user.safeEmail
             // FBKeys.User.imgs: user.imgs,
             // FBKeys.User.bio: user.bio,
@@ -107,12 +106,12 @@ extension DatabaseManager {
                     if var usersCollection = snapshot.value as? [[String: String]] {
                         // append to user dictionary
                         let newElement = [
-                            "name": user.firstName + " " + user.lastName,
+                            FBKeys.User.name: user.firstName + " " + user.lastName,
                             FBKeys.User.age: user.age,
                             FBKeys.User.school: user.school,
                             FBKeys.User.major: user.major,
                             FBKeys.User.gender: user.gender,
-                            FBKeys.User.sexuality: user.sexualtiy,
+                            FBKeys.User.sexuality: user.sexuality,
                             FBKeys.User.email: user.safeEmail
                         ]
                         usersCollection.append(newElement)
@@ -131,12 +130,12 @@ extension DatabaseManager {
                         //MARK ADD all the info to the new collection
                         let newCollection: [[String: String]] = [
                             [
-                                "name": user.firstName + " " + user.lastName,
+                                FBKeys.User.name: user.firstName + " " + user.lastName,
                                 FBKeys.User.age: user.age,
                                 FBKeys.User.school: user.school,
                                 FBKeys.User.major: user.major,
                                 FBKeys.User.gender: user.gender,
-                                FBKeys.User.sexuality: user.sexualtiy,
+                                FBKeys.User.sexuality: user.sexuality,
                                 FBKeys.User.email: user.safeEmail
                             ]
                         ]
@@ -151,7 +150,41 @@ extension DatabaseManager {
                         })
                     }
                 })
-        })
+                
+                self.database.child("swipedBy").observeSingleEvent(of: .value, with: { snapshot in
+                    if var swipeCollection = snapshot.value as? [[String: String]] {
+                        // append to user dictionary
+                        let newElement = [
+                        ]
+                        swipeCollection.append(newElement)
+                        
+                        self.database.child("swipedBy").setValue(swipeCollection, withCompletionBlock: { error, _ in
+                            guard error == nil else {
+                                completion(false)
+                                return
+                            }
+                            
+                            completion(true)
+                        })
+                    }
+                    else {
+                        // create that array
+                        //MARK ADD all the info to the new collection
+                        let newCollection: [[String: String]] = [
+                            user.swipedBy
+                        ]
+                        
+                        self.database.child("swipedBy").setValue(newCollection, withCompletionBlock: { error, _ in
+                            guard error == nil else {
+                                completion(false)
+                                return
+                            }
+                            
+                            completion(true)
+                        })
+                    }
+                })
+            })
     }
     
     public func getAllUsers(completion: @escaping (Result<[[String: String]], Error>) -> Void) {
@@ -214,6 +247,88 @@ extension DatabaseManager {
  ],
  ]
  */
+
+// MARK: - Searching
+extension DatabaseManager {
+    public func searchUsers(data: [String: [Any]]) -> [String] {
+        // take an array of search parameter arrays and returns an array of all matching users
+        var results: [String] = []
+        
+        Firestore
+            .firestore()
+            .collection(FBKeys.CollectionPath.users)
+            
+            //AGE PREF
+//            .whereField(FBKeys.User.age, in: data[FBKeys.User.agePref]!)
+            
+            //GENDER PREF
+            .whereField(FBKeys.User.pronouns, in: data[FBKeys.User.genderPref]!)
+            
+            //LOC PREF
+            .whereField(FBKeys.User.loc, isEqualTo: data[FBKeys.User.locPref]!)
+            
+            //MBTI PREF
+            .whereField(FBKeys.User.mbti, in: data[FBKeys.User.mbtiPref]!)
+            
+            //ZODIAC PREF
+            .whereField(FBKeys.User.zodiac, isEqualTo: data[FBKeys.User.zodPref]!)
+            
+            //EMOJI PREF
+            .whereField(FBKeys.User.emoji, isEqualTo: data[FBKeys.User.emojiPref]!)
+            
+            .getDocuments() { (qSnapshot, err) in
+                if let err = err {
+                    print("Error getting users: \(err)")
+                } else {
+                    for document in qSnapshot!.documents {
+                        results.append(document.documentID)
+                        print("\(document.documentID) => \(document.data())")
+                    }
+                }
+            }
+        return results
+    }
+    
+    //    // MARK: - FB Firestore User swipe
+    //    static func swipe(uid: String, data: [String]) {
+    //        // takes a uid(1) and an array of uids(2)
+    //        // adds all 2s to 1's swiped array and adds 1 to all 2s' swipedBy arrays
+    //        let cur = Auth.auth().currentUser!.uid
+    //        Firestore
+    //            .firestore()
+    //            .collection(FBKeys.CollectionPath.users)
+    //            .document(cur)
+    //            .getDocument() { (doc, err) in
+    //            if let doc = doc, doc.exists {
+    //                data = doc.data()!
+    //                } else {
+    //                print("Document does not exist")
+    //            }
+    //        }
+    //        return data
+    //    }
+    //
+    //    // MARK: - FB Firestore User matches
+    //    static func getMatches(uid: String, data: [String]) {
+    //        // checks swiped array against swipedBy array to find all matches
+    //        var data: [String: Any] = [:]
+    //        let cur = Auth.auth().currentUser!.uid
+    //        Firestore
+    //            .firestore()
+    //            .collection(FBKeys.CollectionPath.users)
+    //            .document(cur)
+    //            .getDocument() { (doc, err) in
+    //            if let doc = doc, doc.exists {
+    //                data = doc.data()!
+    //                } else {
+    //                print("Document does not exist")
+    //            }
+    //        }
+    //        return data
+    //    }
+}
+
+
 
 
 // MARK: - Sending Messages/ Convo
@@ -670,8 +785,6 @@ public func createNewConversation(with otherUserEmail: String, name: String, fir
     }
 
 
-
-
 struct AppUser {
     
     let firstName: String
@@ -681,20 +794,16 @@ struct AppUser {
     // Mark fix to int for age
     let age: String
     let gender: String
-    let sexualtiy: String
+    let sexuality: String
     let school: String
     let major: String
     
     // opts
-    var imgs: [Int:UIImage] = [:]
+    // var imgs: [Int:UIImage] = [:]
     var bio: String = ""
-   
-   
     
     // matching
     var swipedBy: [String] = []
-    
-   
     
     var safeEmail: String {
         // making this inside so we can just use this property when we use this struct

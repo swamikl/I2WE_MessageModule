@@ -178,11 +178,10 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     var genderList = ["Male", "Female", "Transgender", "Other"]
     
     var sexualityChoice: String?
-    var sexualityList = ["Hetrosexual", "Homosexual", "Bi-sexual", "Other"]
+    var sexualityList = ["Heterosexual", "Homosexual", "Bisexual", "Other"]
     
     var majorChoice: String?
-    var majorList = [ "Engineering", "Computer Science", "Philosophy", "Buisiness", "Economics","Math", "Psychology", "Finance", "History", "Art",
-                     "Anthropology", "Chemistry",  "Music", "Physics",  "Other"]
+    var majorList = [ "Engineering", "Computer Science", "Philosophy", "Business", "Economics","Math", "Psychology", "Finance", "History", "Art", "Anthropology", "Chemistry",  "Music", "Physics",  "Other"]
     
     
     let genderPicker = UIPickerView()
@@ -530,7 +529,7 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
                                       uid: "",
                                       age: age,
                                       gender: gender,
-                                      sexualtiy: sexuality,
+                                      sexuality: sexuality,
                                       school: school,
                                       major: major)
                 DatabaseManager.shared.insertUser(with: appUser, completion: { success in
