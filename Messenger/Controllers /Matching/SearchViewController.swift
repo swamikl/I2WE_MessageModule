@@ -65,20 +65,20 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         return field
     }()
     
-//    private let sexualityField: UITextField = {
-//        let field = UITextField()
-//        field.autocapitalizationType = .none
-//        field.autocorrectionType = .no
-//        field.layer.cornerRadius = 12
-//        field.layer.borderWidth = 1
-//        field.layer.borderColor = UIColor.systemPink.cgColor
-//        field.placeholder = "Sexuality"
-//        // to make the text not flush with the box
-//        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
-//        field.leftViewMode = .always
-//        field.backgroundColor = .white
-//        return field
-//    }()
+    private let sexualityField: UITextField = {
+        let field = UITextField()
+        field.autocapitalizationType = .none
+        field.autocorrectionType = .no
+        field.layer.cornerRadius = 12
+        field.layer.borderWidth = 1
+        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.placeholder = "Sexuality"
+        // to make the text not flush with the box
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
+        field.leftViewMode = .always
+        field.backgroundColor = .white
+        return field
+    }()
     
     private let majorField: UITextField = {
         let field = UITextField()
@@ -103,15 +103,15 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     var genderChoice: String?
     let searchGenderList = ["Male", "Female", "Transgender", "Other"]
     
-//    var sexualityChoice: String?
-//    let searchSexualityList = ["Hetrosexual", "Homosexual", "Bisexual", "Other"]
+    var sexualityChoice: String?
+    let searchSexualityList = ["Hetrosexual", "Homosexual", "Bisexual", "Other"]
     
     var majorChoice: String?
     let searchMajorList = [ "Engineering", "Computer Science", "Philosophy", "Business", "Economics", "Math", "Psychology", "Finance", "History", "Art", "Anthropology", "Chemistry",  "Music", "Physics",  "Other"]
     
     
     let searchGenderPicker = UIPickerView()
-//    let searchSexualityPicker = UIPickerView()
+    let searchSexualityPicker = UIPickerView()
     let searchSchoolPicker = UIPickerView()
     let searchMajorPicker = UIPickerView()
     
@@ -124,13 +124,13 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         
     }
     
-//    func createSearchSexualityPickerView()
-//    {
-//        searchSexualityPicker.delegate = self
-//        sexualityField.inputView = searchSexualityPicker
-//        searchSexualityPicker.backgroundColor = UIColor.white
-//
-//    }
+    func createSearchSexualityPickerView()
+    {
+        searchSexualityPicker.delegate = self
+        sexualityField.inputView = searchSexualityPicker
+        searchSexualityPicker.backgroundColor = UIColor.white
+
+    }
     
     func createSearchGenderPickerView()
     {
@@ -177,8 +177,8 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         var countrows = 3 //4
         if pickerView == searchGenderPicker {
             countrows = self.searchGenderList.count
-//        } else if pickerView == searchSexualityPicker {
-//            countrows = self.searchSexualityList.count
+        } else if pickerView == searchSexualityPicker {
+            countrows = self.searchSexualityList.count
         } else if pickerView == searchMajorPicker {
             countrows = self.searchMajorList.count
         } else if pickerView == searchSchoolPicker {
@@ -210,8 +210,8 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         
         if pickerView == searchGenderPicker {
             self.genderField.text = self.searchGenderList[row]
-//        } else if pickerView == searchSexualityPicker {
-//            self.sexualityField.text = self.searchSexulityList[row]
+        } else if pickerView == searchSexualityPicker {
+            self.sexualityField.text = self.searchSexualityList[row]
         } else if pickerView == searchSchoolPicker {
             self.schoolField.text = self.searchSchoolList[row]
         } else if pickerView == searchMajorPicker {
@@ -272,8 +272,8 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         createSearchMajorPickerView()
         scrollView.addSubview(genderField)
         createSearchGenderPickerView()
-//        scrollView.addSubview(sexualityField)
-//        createSearchSexualityPickerView()
+        scrollView.addSubview(sexualityField)
+        createSearchSexualityPickerView()
         
         // the search button
         scrollView.addSubview(searchButton)
@@ -317,10 +317,10 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
                                 width: scrollView.width - 60,
                                 height: 52)
         
-//        sexualityField.frame = CGRect(x: 30,
-//                                    y: genderField.bottom+10,
-//                                    width: scrollView.width - 60,
-//                                    height: 52)
+        sexualityField.frame = CGRect(x: 30,
+                                    y: genderField.bottom+10,
+                                    width: scrollView.width - 60,
+                                    height: 52)
         
         searchButton.frame = CGRect(x: 30,
                                       y: genderField.bottom+10,
@@ -333,7 +333,7 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     //MARK: Maybe this is the code for the searchbutton tapped, combine with the didTapSearch
     @objc private func searchButtonTapped(){
         ageField.resignFirstResponder()
-//        sexualityField.resignFirstResponder()
+        sexualityField.resignFirstResponder()
         genderField.resignFirstResponder()
         schoolField.resignFirstResponder()
         majorField.resignFirstResponder()
@@ -341,7 +341,7 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         guard let age = ageField.text,
         let gender = genderField.text,
         let school = schoolField.text,
-//        let sexuality = sexualityField.text,
+        let sexuality = sexualityField.text,
         let major = majorField.text
             else{
                 return

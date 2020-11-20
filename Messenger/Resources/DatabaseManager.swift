@@ -91,7 +91,7 @@ extension DatabaseManager {
             FBKeys.User.major: user.major,
             FBKeys.User.gender: user.gender,
             FBKeys.User.sexuality: user.sexuality,
-            FBKeys.User.email: user.safeEmail
+            FBKeys.User.email: user.safeEmail,
             // FBKeys.User.imgs: user.imgs,
             // FBKeys.User.bio: user.bio,
             // FBKeys.User.swipedBy: user.swipedBy
@@ -101,22 +101,12 @@ extension DatabaseManager {
                     completion(false)
                     return
                 }
-                
-                self.database.child("users").observeSingleEvent(of: .value, with: { snapshot in
-                    if var usersCollection = snapshot.value as? [[String: String]] {
+                self.database.child(user.safeEmail).child("swipedBy").observeSingleEvent(of: .value, with: { snapshot in
+                    if var swipeCollection = snapshot.value as? [[String]] {
                         // append to user dictionary
-                        let newElement = [
-                            FBKeys.User.name: user.firstName + " " + user.lastName,
-                            FBKeys.User.age: user.age,
-                            FBKeys.User.school: user.school,
-                            FBKeys.User.major: user.major,
-                            FBKeys.User.gender: user.gender,
-                            FBKeys.User.sexuality: user.sexuality,
-                            FBKeys.User.email: user.safeEmail
-                        ]
-                        usersCollection.append(newElement)
+                        swipeCollection.append(user.swipedBy)
                         
-                        self.database.child("users").setValue(usersCollection, withCompletionBlock: { error, _ in
+                        self.database.child(user.safeEmail).child("swipedBy").setValue(swipeCollection, withCompletionBlock: { error, _ in
                             guard error == nil else {
                                 completion(false)
                                 return
@@ -128,53 +118,11 @@ extension DatabaseManager {
                     else {
                         // create that array
                         //MARK ADD all the info to the new collection
-                        let newCollection: [[String: String]] = [
-                            [
-                                FBKeys.User.name: user.firstName + " " + user.lastName,
-                                FBKeys.User.age: user.age,
-                                FBKeys.User.school: user.school,
-                                FBKeys.User.major: user.major,
-                                FBKeys.User.gender: user.gender,
-                                FBKeys.User.sexuality: user.sexuality,
-                                FBKeys.User.email: user.safeEmail
-                            ]
-                        ]
-                        
-                        self.database.child("users").setValue(newCollection, withCompletionBlock: { error, _ in
-                            guard error == nil else {
-                                completion(false)
-                                return
-                            }
-                            
-                            completion(true)
-                        })
-                    }
-                })
-                
-                self.database.child("swipedBy").observeSingleEvent(of: .value, with: { snapshot in
-                    if var swipeCollection = snapshot.value as? [[String: String]] {
-                        // append to user dictionary
-                        let newElement = [
-                        ]
-                        swipeCollection.append(newElement)
-                        
-                        self.database.child("swipedBy").setValue(swipeCollection, withCompletionBlock: { error, _ in
-                            guard error == nil else {
-                                completion(false)
-                                return
-                            }
-                            
-                            completion(true)
-                        })
-                    }
-                    else {
-                        // create that array
-                        //MARK ADD all the info to the new collection
-                        let newCollection: [[String: String]] = [
+                        let newCollection: [[String]] = [
                             user.swipedBy
                         ]
                         
-                        self.database.child("swipedBy").setValue(newCollection, withCompletionBlock: { error, _ in
+                        self.database.child(user.safeEmail).child("swipedBy").setValue(newCollection, withCompletionBlock: { error, _ in
                             guard error == nil else {
                                 completion(false)
                                 return
@@ -255,45 +203,56 @@ extension DatabaseManager {
  */
 
 // MARK: - Searching
+
+// Now, this is the schema.
+// We populate 'swiped' user's swipedBy array with UID of current user who swiped.
+// Then, we push as a new entry using insertUser
+
+// We fetch the swipedBy array users to get the users who appear in our inbox
+
 extension DatabaseManager {
-    public func searchUsers(data: [String: [Any]]) -> [String] {
-        // take an array of search parameter arrays and returns an array of all matching users
-        var results: [String] = []
-        
-        Firestore
-            .firestore()
-            .collection(FBKeys.CollectionPath.users)
-            
-            //AGE PREF
-//            .whereField(FBKeys.User.age, in: data[FBKeys.User.agePref]!)
-            
-            //GENDER PREF
-            .whereField(FBKeys.User.pronouns, in: data[FBKeys.User.genderPref]!)
-            
-            //LOC PREF
-            .whereField(FBKeys.User.loc, isEqualTo: data[FBKeys.User.locPref]!)
-            
-            //MBTI PREF
-            .whereField(FBKeys.User.mbti, in: data[FBKeys.User.mbtiPref]!)
-            
-            //ZODIAC PREF
-            .whereField(FBKeys.User.zodiac, isEqualTo: data[FBKeys.User.zodPref]!)
-            
-            //EMOJI PREF
-            .whereField(FBKeys.User.emoji, isEqualTo: data[FBKeys.User.emojiPref]!)
-            
-            .getDocuments() { (qSnapshot, err) in
-                if let err = err {
-                    print("Error getting users: \(err)")
-                } else {
-                    for document in qSnapshot!.documents {
-                        results.append(document.documentID)
-                        print("\(document.documentID) => \(document.data())")
-                    }
-                }
-            }
-        return results
+    public func swipe(uid: String) {
+        self.database.child("users")
     }
+    
+//    public func searchUsers(data: [String: [Any]]) -> [String] {
+//        // take an array of search parameter arrays and returns an array of all matching users
+//        var results: [String] = []
+//
+//        Firestore
+//            .firestore()
+//            .collection(FBKeys.CollectionPath.users)
+//
+//            //AGE PREF
+////            .whereField(FBKeys.User.age, in: data[FBKeys.User.agePref]!)
+//
+//            //GENDER PREF
+//            .whereField(FBKeys.User.pronouns, in: data[FBKeys.User.genderPref]!)
+//
+//            //LOC PREF
+//            .whereField(FBKeys.User.loc, isEqualTo: data[FBKeys.User.locPref]!)
+//
+//            //MBTI PREF
+//            .whereField(FBKeys.User.mbti, in: data[FBKeys.User.mbtiPref]!)
+//
+//            //ZODIAC PREF
+//            .whereField(FBKeys.User.zodiac, isEqualTo: data[FBKeys.User.zodPref]!)
+//
+//            //EMOJI PREF
+//            .whereField(FBKeys.User.emoji, isEqualTo: data[FBKeys.User.emojiPref]!)
+//
+//            .getDocuments() { (qSnapshot, err) in
+//                if let err = err {
+//                    print("Error getting users: \(err)")
+//                } else {
+//                    for document in qSnapshot!.documents {
+//                        results.append(document.documentID)
+//                        print("\(document.documentID) => \(document.data())")
+//                    }
+//                }
+//            }
+//        return results
+//    }
     
     //    // MARK: - FB Firestore User swipe
     //    static func swipe(uid: String, data: [String]) {
