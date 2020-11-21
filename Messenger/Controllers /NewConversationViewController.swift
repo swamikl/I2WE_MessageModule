@@ -36,7 +36,7 @@ class NewConversationViewController: UIViewController {
         return table
     }()
     
-    // if users search and find no one with that name 
+    // if users search and find no one with that name
     private let noResultsLabel: UILabel = {
        let label = UILabel()
         label.isHidden = true
@@ -141,6 +141,7 @@ extension NewConversationViewController: UISearchBarDelegate{
                 case .success(let usersCollection):
                     self?.hasFetched = true
                     self?.users = usersCollection
+                    print("users collection \(usersCollection)")
                     self?.filterUsers(with: query)
                 case .failure(let error):
                     print("Failed to get usres: \(error)")
@@ -166,6 +167,8 @@ extension NewConversationViewController: UISearchBarDelegate{
         self.results = results
         updateUI()
     }
+    
+    
     
     func updateUI() {
         if results.isEmpty {

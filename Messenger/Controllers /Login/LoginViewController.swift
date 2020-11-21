@@ -156,6 +156,7 @@ class LoginViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         scrollView.frame = view.bounds
+        scrollView.contentSize = CGSize(width: 375, height: 800)
         
         // the view.width comes from the extenstions.swift file
         let size = scrollView.width/3

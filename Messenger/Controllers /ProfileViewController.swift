@@ -94,7 +94,7 @@ class ProfileViewController: UIViewController {
 
 
 
-//Mark database stuff no need look 
+//Mark database stuff no need look
 extension ProfileViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return data.count

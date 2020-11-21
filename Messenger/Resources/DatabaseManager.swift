@@ -10,8 +10,10 @@
 // this is so that we will not have redundent code in all of the controllers
 
 
+
 import Foundation
 import FirebaseDatabase
+import FirebaseAuth
 
 // we do not want this class to be subclassed
 final class DatabaseManager {
@@ -20,6 +22,7 @@ final class DatabaseManager {
     static let shared = DatabaseManager()
     
     private let database = Database.database().reference()
+    
     
     static func safeEmail(emailAddress: String) -> String {
         var safeEmail = emailAddress.replacingOccurrences(of: ".", with: "-")
@@ -30,7 +33,7 @@ final class DatabaseManager {
 }
 
 
-// to get the name of the users that registered through email 
+// to get the name of the users that registered through email
 extension DatabaseManager {
 
     public func getDataFor(path: String, completion: @escaping (Result<Any, Error>) -> Void) {
@@ -63,7 +66,7 @@ extension DatabaseManager {
         var safeEmail = email.replacingOccurrences(of: ".", with: "-")
         safeEmail = safeEmail.replacingOccurrences(of: "@", with: "-")
         
-        
+        // MARK: -
         database.child(safeEmail).observeSingleEvent(of: .value, with: {snapshot in
             guard snapshot.value as? String != nil else  {
                 completion(false)
@@ -73,16 +76,18 @@ extension DatabaseManager {
         })
     }
     
-    // MARK: - Need to fix, if log in twice with FB the user gets added twice to the database 
+    // MARK: - Need to fix, if log in twice with FB the user gets added twice to the database
     // this is what is writing to our data base
     // the email address is the key so no 2 users can have the same email
     // set value is what is writing this info to the firebase database
     /// inserts new user to database
     
     // age, gender, school, major, relationshipType, party?
-    
-    
+
+    //MARK- New insert
     public func insertUser(with user: AppUser, completion: @escaping (Bool) -> Void) {
+        let currUser = Auth.auth().currentUser
+        let uid = currUser!.uid
         database.child(user.safeEmail).setValue([
             FBKeys.User.firstName: user.firstName,
             FBKeys.User.lastName: user.lastName,
@@ -101,46 +106,50 @@ extension DatabaseManager {
                     completion(false)
                     return
                 }
-                
+
                 self.database.child("users").observeSingleEvent(of: .value, with: { snapshot in
                     if var usersCollection = snapshot.value as? [[String: String]] {
                         // append to user dictionary
                         let newElement = [
-                            FBKeys.User.name: user.firstName + " " + user.lastName,
+                            "name": user.firstName + " " + user.lastName,
                             FBKeys.User.age: user.age,
                             FBKeys.User.school: user.school,
                             FBKeys.User.major: user.major,
                             FBKeys.User.gender: user.gender,
                             FBKeys.User.sexuality: user.sexuality,
-                            FBKeys.User.email: user.safeEmail
+                            FBKeys.User.email: user.safeEmail,
+                            FBKeys.User.firstName: user.firstName,
+                            FBKeys.User.lastName: user.lastName
                         ]
-                        usersCollection.append(newElement)
-                        
-                        self.database.child("users").setValue(usersCollection, withCompletionBlock: { error, _ in
-                            guard error == nil else {
-                                completion(false)
-                                return
-                            }
-                            
+                        // usersCollection.append(newElement)
+                        // changed from usercollection to new element
+                         self.database.child("users/\(uid)").setValue(newElement, withCompletionBlock: { error, _ in
+                                                                        guard error == nil else {
+                                                                            completion(false)
+                                                                            return
+                                                                        }
+
                             completion(true)
                         })
                     }
                     else {
                         // create that array
-                        //MARK ADD all the info to the new collection
-                        let newCollection: [[String: String]] = [
+                        let newCollection: [String: String] =
                             [
-                                FBKeys.User.name: user.firstName + " " + user.lastName,
+                                "name": user.firstName + " " + user.lastName,
                                 FBKeys.User.age: user.age,
                                 FBKeys.User.school: user.school,
                                 FBKeys.User.major: user.major,
                                 FBKeys.User.gender: user.gender,
                                 FBKeys.User.sexuality: user.sexuality,
-                                FBKeys.User.email: user.safeEmail
+                                FBKeys.User.email: user.safeEmail,
+                                FBKeys.User.firstName: user.firstName,
+                                FBKeys.User.lastName: user.lastName
                             ]
-                        ]
                         
-                        self.database.child("users").setValue(newCollection, withCompletionBlock: { error, _ in
+
+                        self.database.child("users/\(uid)").setValue(newCollection, withCompletionBlock: { error, _ in
+                            
                             guard error == nil else {
                                 completion(false)
                                 return
@@ -150,53 +159,47 @@ extension DatabaseManager {
                         })
                     }
                 })
-                
-                self.database.child("swipedBy").observeSingleEvent(of: .value, with: { snapshot in
-                    if var swipeCollection = snapshot.value as? [[String: String]] {
-                        // append to user dictionary
-                        let newElement = [
-                        ]
-                        swipeCollection.append(newElement)
-                        
-                        self.database.child("swipedBy").setValue(swipeCollection, withCompletionBlock: { error, _ in
-                            guard error == nil else {
-                                completion(false)
-                                return
-                            }
-                            
-                            completion(true)
-                        })
-                    }
-                    else {
-                        // create that array
-                        //MARK ADD all the info to the new collection
-                        let newCollection: [[String: String]] = [
-                            user.swipedBy
-                        ]
-                        
-                        self.database.child("swipedBy").setValue(newCollection, withCompletionBlock: { error, _ in
-                            guard error == nil else {
-                                completion(false)
-                                return
-                            }
-                            
-                            completion(true)
-                        })
-                    }
-                })
-            })
-    }
-    
-    public func getAllUsers(completion: @escaping (Result<[[String: String]], Error>) -> Void) {
-        database.child("users").observeSingleEvent(of: .value, with: { snapshot in
-            guard let value = snapshot.value as? [[String: String]] else {
-                completion(.failure(DatabaseError.failedToFetch))
-                return
-            }
-            
-            completion(.success(value))
         })
     }
+    
+    
+    public func getAllUsers(completion: @escaping (Result<[[String: String]], Error>) -> Void) {
+        let parentRef = database.child("users")
+        var userList = [[String:String]]()
+
+        parentRef.observeSingleEvent(of: .value) { snapshot in
+            print(snapshot)
+            // print("snapshot key : \(snapshot.key)")
+            
+            for user_child in snapshot.children {
+                let user_snap = user_child as! DataSnapshot
+                let value = user_snap.value as! [String:String]
+                // variables
+                let name: String = value["name"]!
+                let email: String = value["email"]!
+                let age: String = value["age"]!
+                let gender: String = value["gender"]!
+                let sexualty: String = value["sexuality"]!
+                let school: String = value["school"]!
+                let major: String = value["major"]!
+                 
+                let userDict = ["name": name,
+                                "email": email,
+                                "gender": gender,
+                                "sexuality": sexualty,
+                                "school": school,
+                                "major": major,
+                                "age": age]
+                print(userDict)
+                userList.append(userDict)
+                
+            }
+            print("userList \(userList)")
+            completion(.success(userList))
+        }
+        completion(.failure(DatabaseError.failedToFetch))
+}
+    
     
     public enum DatabaseError: Error {
         case failedToFetch
@@ -247,88 +250,6 @@ extension DatabaseManager {
  ],
  ]
  */
-
-// MARK: - Searching
-extension DatabaseManager {
-    public func searchUsers(data: [String: [Any]]) -> [String] {
-        // take an array of search parameter arrays and returns an array of all matching users
-        var results: [String] = []
-        
-        Firestore
-            .firestore()
-            .collection(FBKeys.CollectionPath.users)
-            
-            //AGE PREF
-//            .whereField(FBKeys.User.age, in: data[FBKeys.User.agePref]!)
-            
-            //GENDER PREF
-            .whereField(FBKeys.User.pronouns, in: data[FBKeys.User.genderPref]!)
-            
-            //LOC PREF
-            .whereField(FBKeys.User.loc, isEqualTo: data[FBKeys.User.locPref]!)
-            
-            //MBTI PREF
-            .whereField(FBKeys.User.mbti, in: data[FBKeys.User.mbtiPref]!)
-            
-            //ZODIAC PREF
-            .whereField(FBKeys.User.zodiac, isEqualTo: data[FBKeys.User.zodPref]!)
-            
-            //EMOJI PREF
-            .whereField(FBKeys.User.emoji, isEqualTo: data[FBKeys.User.emojiPref]!)
-            
-            .getDocuments() { (qSnapshot, err) in
-                if let err = err {
-                    print("Error getting users: \(err)")
-                } else {
-                    for document in qSnapshot!.documents {
-                        results.append(document.documentID)
-                        print("\(document.documentID) => \(document.data())")
-                    }
-                }
-            }
-        return results
-    }
-    
-    //    // MARK: - FB Firestore User swipe
-    //    static func swipe(uid: String, data: [String]) {
-    //        // takes a uid(1) and an array of uids(2)
-    //        // adds all 2s to 1's swiped array and adds 1 to all 2s' swipedBy arrays
-    //        let cur = Auth.auth().currentUser!.uid
-    //        Firestore
-    //            .firestore()
-    //            .collection(FBKeys.CollectionPath.users)
-    //            .document(cur)
-    //            .getDocument() { (doc, err) in
-    //            if let doc = doc, doc.exists {
-    //                data = doc.data()!
-    //                } else {
-    //                print("Document does not exist")
-    //            }
-    //        }
-    //        return data
-    //    }
-    //
-    //    // MARK: - FB Firestore User matches
-    //    static func getMatches(uid: String, data: [String]) {
-    //        // checks swiped array against swipedBy array to find all matches
-    //        var data: [String: Any] = [:]
-    //        let cur = Auth.auth().currentUser!.uid
-    //        Firestore
-    //            .firestore()
-    //            .collection(FBKeys.CollectionPath.users)
-    //            .document(cur)
-    //            .getDocument() { (doc, err) in
-    //            if let doc = doc, doc.exists {
-    //                data = doc.data()!
-    //                } else {
-    //                print("Document does not exist")
-    //            }
-    //        }
-    //        return data
-    //    }
-}
-
-
 
 
 // MARK: - Sending Messages/ Convo
@@ -785,6 +706,8 @@ public func createNewConversation(with otherUserEmail: String, name: String, fir
     }
 
 
+
+
 struct AppUser {
     
     let firstName: String
@@ -799,8 +722,10 @@ struct AppUser {
     let major: String
     
     // opts
-    // var imgs: [Int:UIImage] = [:]
+    var imgs: [Int:UIImage] = [:]
     var bio: String = ""
+   
+   
     
     // matching
     var swipedBy: [String] = []
@@ -815,6 +740,6 @@ struct AppUser {
         // all the profile pictures are saved in the format shown below
         return "\(safeEmail)_profile_picture.png"
     }
-    
 }
+
 
