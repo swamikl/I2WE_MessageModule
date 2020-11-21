@@ -13,6 +13,12 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     
     private let spinner = JGProgressHUD(style: .light)
     
+    private var hasFetched = false
+    public var completion: (([String:String]) -> Void)?
+    
+    private var users = [[String: String]]()
+    private var results = [[String: String]]()
+    
     // container for scrolling in case of small devices, we might not be able to fit everything
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -95,6 +101,26 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         return field
     }()
     
+    private let tableView: UITableView = {
+        let table = UITableView()
+        table.isHidden = true
+        table.register(UITableViewCell.self,
+                       forCellReuseIdentifier: "cell")
+        return table
+    }()
+    
+    // if users search and find no one with that name
+    private let noResultsLabel: UILabel = {
+        let label = UILabel()
+        label.isHidden = true
+        label.text = "No Results"
+        label.textAlignment = .center
+        label.textColor = .green
+        label.font = .systemFont(ofSize: 21, weight: .medium)
+        return label
+        
+    }()
+    
     // the sexuality, gender, school, and majors are pickerviews
     
     var schoolChoice: String?
@@ -108,7 +134,7 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     
     var majorChoice: String?
     let searchMajorList = [ "Engineering", "Computer Science", "Philosophy", "Buisiness", "Economics","Math", "Psychology", "Finance", "History", "Art",
-                      "Anthropology", "Chemistry",  "Music", "Physics",  "Other"]
+                            "Anthropology", "Chemistry",  "Music", "Physics",  "Other"]
     
     
     let searchGenderPicker = UIPickerView()
@@ -251,6 +277,11 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        view.addSubview(noResultsLabel)
+        view.addSubview(tableView)
+        
+        tableView.delegate = self
+        tableView.dataSource = self
         // Do any additional setup after loading the view.
         
         // where to go when search button is pressed
@@ -287,6 +318,7 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         scrollView.frame = view.bounds
+        scrollView.contentSize = CGSize(width: 375, height: 800)
         
         // the view.width comes from the extenstions.swift file
         // the logo size
@@ -305,29 +337,35 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
                                 height: 52)
         
         schoolField.frame = CGRect(x: 30,
-                                       y: ageField.bottom+10,
-                                       width: scrollView.width - 60,
-                                       height: 52)
+                                   y: ageField.bottom+10,
+                                   width: scrollView.width - 60,
+                                   height: 52)
         majorField.frame = CGRect(x: 30,
-                                   y: schoolField.bottom+10,
+                                  y: schoolField.bottom+10,
+                                  width: scrollView.width - 60,
+                                  height: 52)
+        
+        genderField.frame = CGRect(x: 30,
+                                   y: majorField.bottom+10,
                                    width: scrollView.width - 60,
                                    height: 52)
         
-        genderField.frame = CGRect(x: 30,
-                                y: majorField.bottom+10,
-                                width: scrollView.width - 60,
-                                height: 52)
-        
         sexualityField.frame = CGRect(x: 30,
-                                    y: genderField.bottom+10,
-                                    width: scrollView.width - 60,
-                                    height: 52)
-        
-        searchButton.frame = CGRect(x: 30,
-                                      y: sexualityField.bottom+10,
+                                      y: genderField.bottom+10,
                                       width: scrollView.width - 60,
                                       height: 52)
         
+        searchButton.frame = CGRect(x: 30,
+                                    y: sexualityField.bottom+10,
+                                    width: scrollView.width - 60,
+                                    height: 52)
+        
+        
+        tableView.frame = view.bounds
+        noResultsLabel.frame = CGRect(x: view.width/4,
+                                      y: (view.height-200)/2,
+                                      width: view.width/2,
+                                      height: 200)
         
     }
     
@@ -340,10 +378,10 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         majorField.resignFirstResponder()
         
         guard let age = ageField.text,
-        let gender = genderField.text,
-        let school = schoolField.text,
-        let sexuality = sexualityField.text,
-        let major = majorField.text
+            let gender = genderField.text,
+            let school = schoolField.text,
+            let sexuality = sexualityField.text,
+            let major = majorField.text
             else{
                 return
         }
@@ -352,15 +390,101 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         
         // Firebase searching stuff
         
+        
+        
     }
-    
     // MARK: didTapSearch code
     @objc private func didTapSearch(){
-        let vc = RegisterViewController()
-        vc.title = "Search Users"
-        navigationController?.pushViewController(vc, animated: true)
+                 let vc = RegisterViewController()
+                 vc.title = "Search Users"
+                 navigationController?.pushViewController(vc, animated: true)
+//        hasFetched = true
+//        updateUI()
+    }
+}
+
+extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return results.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        cell.textLabel?.text = results[indexPath.row]["name"]
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        // start the cconvo
+        let targetUserData = results[indexPath.row]
+        
+        dismiss(animated: true, completion: { [weak self] in
+            self?.completion?(targetUserData)
+        })
+        
+        completion?(targetUserData)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 90
+    }
+    
+    
+    func searchUsers(query: String) {
+        // check if array has firebase results
+        if hasFetched {
+            // if it does: filter
+            filterUsers(with: query)
+        }
+        else {
+            // if not, fetch then filter
+            DatabaseManager.shared.getAllUsers(completion: { [weak self] result in
+                switch result {
+                case .success(let usersCollection):
+                    self?.hasFetched = true
+                    self?.users = usersCollection
+                    print("users collection \(usersCollection)")
+                    self?.filterUsers(with: query)
+                case .failure(let error):
+                    print("Failed to get usres: \(error)")
+                }
+            })
+        }
+    }
+    
+    func filterUsers(with term: String) {
+        // update the UI: show the results or show no results label
+        guard hasFetched else{
+            return
+        }
+        
+        self.spinner.dismiss()
+        
+        let results: [[String:String]] = self.users.filter({
+            guard let name = $0["name"]?.lowercased() else {
+                return false
+            }
+            return name.hasPrefix(term.lowercased())
+        })
+        self.results = results
+        updateUI()
     }
     
     
     
+    func updateUI() {
+        if results.isEmpty {
+            self.noResultsLabel.isHidden = false
+            self.tableView.isHidden = true
+        }
+        else {
+            self.noResultsLabel.isHidden = true
+            self.tableView.isHidden = false
+            self.tableView.reloadData()
+        }
+    }
 }
+
+

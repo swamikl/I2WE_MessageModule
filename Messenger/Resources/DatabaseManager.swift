@@ -13,6 +13,7 @@
 
 import Foundation
 import FirebaseDatabase
+import FirebaseAuth
 
 // we do not want this class to be subclassed
 final class DatabaseManager {
@@ -21,6 +22,7 @@ final class DatabaseManager {
     static let shared = DatabaseManager()
     
     private let database = Database.database().reference()
+    
     
     static func safeEmail(emailAddress: String) -> String {
         var safeEmail = emailAddress.replacingOccurrences(of: ".", with: "-")
@@ -64,7 +66,7 @@ extension DatabaseManager {
         var safeEmail = email.replacingOccurrences(of: ".", with: "-")
         safeEmail = safeEmail.replacingOccurrences(of: "@", with: "-")
         
-        
+        // MARK: -
         database.child(safeEmail).observeSingleEvent(of: .value, with: {snapshot in
             guard snapshot.value as? String != nil else  {
                 completion(false)
@@ -81,9 +83,82 @@ extension DatabaseManager {
     /// inserts new user to database
     
     // age, gender, school, major, relationshipType, party?
-    
-    
+
+//    public func insertUser(with user: AppUser, completion: @escaping (Bool) -> Void) {
+//           database.child(user.safeEmail).setValue([
+//               FBKeys.User.firstName: user.firstName,
+//               FBKeys.User.lastName: user.lastName,
+//               FBKeys.User.age: user.age,
+//               FBKeys.User.school: user.school,
+//               FBKeys.User.major: user.major,
+//               FBKeys.User.gender: user.gender,
+//               FBKeys.User.sexuality: user.sexualtiy,
+//               FBKeys.User.email: user.safeEmail
+//               // FBKeys.User.imgs: user.imgs,
+//               // FBKeys.User.bio: user.bio,
+//               // FBKeys.User.swipedBy: user.swipedBy
+//               ], withCompletionBlock: { error, _ in
+//                   guard error == nil else {
+//                       print("failed ot write to database")
+//                       completion(false)
+//                       return
+//                   }
+//
+//                   self.database.child("users").observeSingleEvent(of: .value, with: { snapshot in
+//                       if var usersCollection = snapshot.value as? [[String: String]] {
+//                           // append to user dictionary
+//                           let newElement = [
+//                               "name": user.firstName + " " + user.lastName,
+//                               FBKeys.User.age: user.age,
+//                               FBKeys.User.school: user.school,
+//                               FBKeys.User.major: user.major,
+//                               FBKeys.User.gender: user.gender,
+//                               FBKeys.User.sexuality: user.sexualtiy,
+//                               FBKeys.User.email: user.safeEmail
+//                           ]
+//                           usersCollection.append(newElement)
+//
+//                           self.database.child("users").setValue(usersCollection, withCompletionBlock: { error, _ in
+//                               guard error == nil else {
+//                                   completion(false)
+//                                   return
+//                               }
+//
+//                               completion(true)
+//                           })
+//                       }
+//                       else {
+//                           // create that array
+//                           //MARK ADD all the info to the new collection
+//                           let newCollection: [[String: String]] = [
+//                               [
+//                                   "name": user.firstName + " " + user.lastName,
+//                                   FBKeys.User.age: user.age,
+//                                   FBKeys.User.school: user.school,
+//                                   FBKeys.User.major: user.major,
+//                                   FBKeys.User.gender: user.gender,
+//                                   FBKeys.User.sexuality: user.sexualtiy,
+//                                   FBKeys.User.email: user.safeEmail
+//                               ]
+//                           ]
+//
+//                           self.database.child("users").setValue(newCollection, withCompletionBlock: { error, _ in
+//                               guard error == nil else {
+//                                   completion(false)
+//                                   return
+//                               }
+//
+//                               completion(true)
+//                           })
+//                       }
+//                   })
+//           })
+//       }
+
+    //MARK- New insert
     public func insertUser(with user: AppUser, completion: @escaping (Bool) -> Void) {
+        let currUser = Auth.auth().currentUser
+        let uid = currUser!.uid
         database.child(user.safeEmail).setValue([
             FBKeys.User.firstName: user.firstName,
             FBKeys.User.lastName: user.lastName,
@@ -102,7 +177,7 @@ extension DatabaseManager {
                     completion(false)
                     return
                 }
-                
+
                 self.database.child("users").observeSingleEvent(of: .value, with: { snapshot in
                     if var usersCollection = snapshot.value as? [[String: String]] {
                         // append to user dictionary
@@ -113,23 +188,24 @@ extension DatabaseManager {
                             FBKeys.User.major: user.major,
                             FBKeys.User.gender: user.gender,
                             FBKeys.User.sexuality: user.sexualtiy,
-                            FBKeys.User.email: user.safeEmail
+                            FBKeys.User.email: user.safeEmail,
+                            FBKeys.User.firstName: user.firstName,
+                            FBKeys.User.lastName: user.lastName
                         ]
-                        usersCollection.append(newElement)
-                        
-                        self.database.child("users").setValue(usersCollection, withCompletionBlock: { error, _ in
-                            guard error == nil else {
-                                completion(false)
-                                return
-                            }
-                            
+                        // usersCollection.append(newElement)
+                        // changed from usercollection to new element
+                         self.database.child("users/\(uid)").setValue(newElement, withCompletionBlock: { error, _ in
+                                                                        guard error == nil else {
+                                                                            completion(false)
+                                                                            return
+                                                                        }
+
                             completion(true)
                         })
                     }
                     else {
                         // create that array
-                        //MARK ADD all the info to the new collection
-                        let newCollection: [[String: String]] = [
+                        let newCollection: [String: String] =
                             [
                                 "name": user.firstName + " " + user.lastName,
                                 FBKeys.User.age: user.age,
@@ -137,11 +213,14 @@ extension DatabaseManager {
                                 FBKeys.User.major: user.major,
                                 FBKeys.User.gender: user.gender,
                                 FBKeys.User.sexuality: user.sexualtiy,
-                                FBKeys.User.email: user.safeEmail
+                                FBKeys.User.email: user.safeEmail,
+                                FBKeys.User.firstName: user.firstName,
+                                FBKeys.User.lastName: user.lastName
                             ]
-                        ]
                         
-                        self.database.child("users").setValue(newCollection, withCompletionBlock: { error, _ in
+
+                        self.database.child("users/\(uid)").setValue(newCollection, withCompletionBlock: { error, _ in
+                            
                             guard error == nil else {
                                 completion(false)
                                 return
@@ -153,17 +232,123 @@ extension DatabaseManager {
                 })
         })
     }
+
+        
+
+    
+//public func getAllUsers(completion: @escaping (Result<[[String: String]], Error>) -> Void) {
+//    database.child("users").observeSingleEvent(of: .value, with: { snapshot in
+//        guard let value = snapshot.value as? [[String: String]] else {
+//            print("error is here")
+//            completion(.failure(DatabaseError.failedToFetch))
+//            return
+//        }
+//        print(value)
+//        completion(.success(value))
+//    })
+//}
+
+//public func getAllUsers(completion: @escaping (Result<[[String: String]], Error>) -> Void) {
+//        database.child("users").observeSingleEvent(of: .value, with: { snapshot in
+//            guard let value = snapshot.value as? [[String: String]] else {
+//                print("error is here")
+//                completion(.failure(DatabaseError.failedToFetch))
+//                return
+//            }
+//            print(value)
+//            completion(.success(value))
+//        })
+//    }
+//
+    
+    
     
     public func getAllUsers(completion: @escaping (Result<[[String: String]], Error>) -> Void) {
-        database.child("users").observeSingleEvent(of: .value, with: { snapshot in
-            guard let value = snapshot.value as? [[String: String]] else {
-                completion(.failure(DatabaseError.failedToFetch))
-                return
-            }
+        let parentRef = database.child("users")
+        var userList = [[String:String]]()
+
+        parentRef.observeSingleEvent(of: .value) { snapshot in
+            print(snapshot)
+            // print("snapshot key : \(snapshot.key)")
             
-            completion(.success(value))
-        })
-    }
+            for user_child in snapshot.children {
+                let user_snap = user_child as! DataSnapshot
+                let value = user_snap.value as! [String:String]
+                // variables
+                let name: String = value["name"]!
+                let email: String = value["email"]!
+                let age: String = value["age"]!
+                let gender: String = value["gender"]!
+                let sexualty: String = value["sexuality"]!
+                let school: String = value["school"]!
+                let major: String = value["major"]!
+                 
+                let userDict = ["name": name,
+                                "email": email,
+                                "gender": gender,
+                                "sexuality": sexualty,
+                                "school": school,
+                                "major": major,
+                                "age": age]
+                print(userDict)
+                userList.append(userDict)
+                
+            }
+            print("userList \(userList)")
+            completion(.success(userList))
+        }
+        completion(.failure(DatabaseError.failedToFetch))
+}
+
+//
+//    public func getAllUsers(completion: @escaping (Result<[[String: String]], Error>) -> Void) {
+//        let parentRef = database.child("users")
+//        var userList = [[String:String]]()
+//
+//        parentRef.observeSingleEvent(of: .value) { snapshot in
+//           print(snapshot)
+//            print("snapshot key : \(snapshot.key)")
+
+//           let value = snapshot.value as? NSDictionary
+//           print("value: \(value)")
+
+//            for user_child in (snapshot.children){
+//                let value = user_child as? NSDictionary
+//                let firstName = value?["firstName"]
+//                let lastName = value?["lastName"]
+//                let emailAddress = value?["email"]
+//                let uid  = ""
+//                let age = value?["age"]
+//                let gender = value?["gender"]
+//                let sexualtiy = value?["sexuality"]
+//                let school = value?["school"]
+//                let major = value?["major"]
+//                var person = [(firstName: firstName as! String,
+//                               lastName: lastName as! String,
+//                               emailAddress: emailAddress as! String,
+//                               uid: uid,
+//                               age: age as! String,
+//                               gender: gender as! String,
+//                               sexuality: sexualtiy as! String,
+//                               school: school as! String,
+//                               major: major as! String)]
+//               print(person)
+                
+                //print("user child: \(user_child)")
+//                let user_snap = user_child as! NSDictionary
+//                // let user_snap = user_child as! DataSnapshot
+//
+//                print("the user snap \(user_snap)")
+//                // userList.append(user_snap)
+//            }
+//
+//        }
+//        print(userList)
+//        completion(.success(userList))
+//
+//    }
+    
+    
     
     public enum DatabaseError: Error {
         case failedToFetch
@@ -684,6 +869,7 @@ struct AppUser {
     let sexualtiy: String
     let school: String
     let major: String
+    // var name = firstName + " " + lastName
     
     // opts
     var imgs: [Int:UIImage] = [:]
@@ -693,8 +879,6 @@ struct AppUser {
     
     // matching
     var swipedBy: [String] = []
-    
-   
     
     var safeEmail: String {
         // making this inside so we can just use this property when we use this struct
@@ -707,5 +891,43 @@ struct AppUser {
         return "\(safeEmail)_profile_picture.png"
     }
     
+//    init(firstName: String, lastName: String, emailAddress: String, uid: String, age: String, gender: String, sexuality: String, school: String, major: String) {
+//        self.firstName = firstName
+//        self.lastName = lastName
+//        self.emailAddress = emailAddress
+//        self.age = age
+//        self.uid = uid
+//        self.gender = gender
+//        self.sexualtiy = sexuality
+//        self.school = school
+//        self.major = major
+//    }
+    
 }
+
+//class PersonInfo: Codable {
+//    var pName: String
+//    var pAge :String
+//    var pEmail: String
+//    let ref: DatabaseReference?
+//
+//    init( name: String, age: String, email: String) {
+//        self.pName = name
+//        self.pAge = number
+//        self.pEmail = email
+//        self.ref = nil
+//    }
+//
+//    init(snapshot: DataSnapshot) {
+//        pName = snapshot.value!["pName"] as! String
+//        pAge = snapshot.value!["pAge"] as! String
+//        pEmail = snapshot.value!["pEmail"] as! String
+//        ref = snapshot.ref
+//    }
+//
+//    convenience override init() {
+//        self.init(name:"",age: "", email: "")
+//    }
+//}
+
 
