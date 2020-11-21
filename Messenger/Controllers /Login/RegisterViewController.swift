@@ -526,6 +526,7 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
                 let appUser = AppUser(firstName: firstName,
                                       lastName: lastName,
                                       emailAddress: email,
+                                      uid: "",
                                       age: age,
                                       gender: gender,
                                       sexuality: sexuality,
