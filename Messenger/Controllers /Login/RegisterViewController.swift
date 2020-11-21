@@ -531,7 +531,7 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
                                       uid: "",
                                       age: age,
                                       gender: gender,
-                                      sexualtiy: sexuality,
+                                      sexuality: sexuality,
                                       school: school,
                                       major: major)
                 DatabaseManager.shared.insertUser(with: appUser, completion: { success in

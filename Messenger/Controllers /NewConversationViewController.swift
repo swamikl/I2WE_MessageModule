@@ -36,7 +36,7 @@ class NewConversationViewController: UIViewController {
         return table
     }()
     
-    // if users search and find no one with that name 
+    // if users search and find no one with that name
     private let noResultsLabel: UILabel = {
        let label = UILabel()
         label.isHidden = true

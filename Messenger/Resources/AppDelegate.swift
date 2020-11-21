@@ -84,7 +84,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate{
                                       uid: "",
                                       age: "",
                                       gender: "",
-                                      sexualtiy: "",
+                                      sexuality: "",
                                       school: "",
                                       major: "")
                 
