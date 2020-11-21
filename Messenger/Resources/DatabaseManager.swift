@@ -12,8 +12,6 @@
 
 import Foundation
 import FirebaseDatabase
-import FirebaseAuth
-
 
 // we do not want this class to be subclassed
 final class DatabaseManager {
@@ -54,7 +52,7 @@ extension DatabaseManager {
     // this is to make sure that people cannot register with the same email twice
     // the snapshot is getting the data from the data base
     // if database.child(email) is already in database thus we do not want to create the account
-    public func userExistis(with uid: String,
+    public func userExistis(with email: String,
                             completion: @escaping ((Bool) -> Void)){
         
         
@@ -62,11 +60,11 @@ extension DatabaseManager {
         // so we need to do some sort of replacements to the email so that we can put it in the database
         // in the database the emails will have "-" insted of "."
         // in the database the emails will have "-" insted of "@"
-//        var safeEmail = email.replacingOccurrences(of: ".", with: "-")
-//        safeEmail = safeEmail.replacingOccurrences(of: "@", with: "-")
+        var safeEmail = email.replacingOccurrences(of: ".", with: "-")
+        safeEmail = safeEmail.replacingOccurrences(of: "@", with: "-")
         
         
-        database.child(uid).observeSingleEvent(of: .value, with: {snapshot in
+        database.child(safeEmail).observeSingleEvent(of: .value, with: {snapshot in
             guard snapshot.value as? String != nil else  {
                 completion(false)
                 return
@@ -85,7 +83,7 @@ extension DatabaseManager {
     
     
     public func insertUser(with user: AppUser, completion: @escaping (Bool) -> Void) {
-        database.child("users").child(user.uid).setValue([
+        database.child(user.safeEmail).setValue([
             FBKeys.User.firstName: user.firstName,
             FBKeys.User.lastName: user.lastName,
             FBKeys.User.age: user.age,
@@ -103,39 +101,37 @@ extension DatabaseManager {
                     completion(false)
                     return
                 }
-                
-                // write swipedBy array
-//                self.database.child(user.uid).child("swipedBy").observeSingleEvent(of: .value, with: { snapshot in
-//                    if var swipeCollection = snapshot.value as? [[String]] {
-//                        // append within user to swipedBy array
-//                        swipeCollection.append(user.swipedBy)
-//
-//                        self.database.child(user.uid).child("swipedBy").setValue(swipeCollection, withCompletionBlock: { error, _ in
-//                            guard error == nil else {
-//                                completion(false)
-//                                return
-//                            }
-//
-//                            completion(true)
-//                        })
-//                    }
-//                    else {
-//                        // create that array
-//                        //MARK ADD all the info to the new collection
-//                        let newCollection: [[String]] = [
-//                            user.swipedBy
-//                        ]
-//
-//                        self.database.child(user.safeEmail).child("swipedBy").setValue(newCollection, withCompletionBlock: { error, _ in
-//                            guard error == nil else {
-//                                completion(false)
-//                                return
-//                            }
-//
-//                            completion(true)
-//                        })
-//                    }
-//                })
+                self.database.child(user.safeEmail).child("swipedBy").observeSingleEvent(of: .value, with: { snapshot in
+                    if var swipeCollection = snapshot.value as? [[String]] {
+                        // append to user dictionary
+                        swipeCollection.append(user.swipedBy)
+                        
+                        self.database.child(user.safeEmail).child("swipedBy").setValue(swipeCollection, withCompletionBlock: { error, _ in
+                            guard error == nil else {
+                                completion(false)
+                                return
+                            }
+                            
+                            completion(true)
+                        })
+                    }
+                    else {
+                        // create that array
+                        //MARK ADD all the info to the new collection
+                        let newCollection: [[String]] = [
+                            user.swipedBy
+                        ]
+                        
+                        self.database.child(user.safeEmail).child("swipedBy").setValue(newCollection, withCompletionBlock: { error, _ in
+                            guard error == nil else {
+                                completion(false)
+                                return
+                            }
+                            
+                            completion(true)
+                        })
+                    }
+                })
             })
     }
     
@@ -215,91 +211,92 @@ extension DatabaseManager {
 // We fetch the swipedBy array users to get the users who appear in our inbox
 
 extension DatabaseManager {
-    
-    public func swipe(with user: AppUser, completion: @escaping (Bool) -> Void) {
-        // first, get uid of current user
-        guard let curUser = FirebaseAuth.Auth.auth().currentUser?.uid else { return }
-        
-        // second, get uid of swiped user (the argument)
-        
-        // third, append current uid to swiped uid swipedBy collection
-        self.database.child("users").child(user.uid).child("swipedBy").observeSingleEvent(of: .value, with: { snapshot in
-            if var swipeCollection = snapshot.value as? [String] {
-                // append within user to swipedBy array
-                swipeCollection.append(curUser)
-                
-                self.database.child("users").child(user.uid).child("swipedBy").setValue(swipeCollection, withCompletionBlock: { error, _ in
-                    guard error == nil else {
-                        completion(false)
-                        return
-                    }
-                    
-                    completion(true)
-                })
-            }
-            else {
-                // create that array
-                //MARK ADD all the info to the new collection
-                let newCollection: [String] = [
-                    curUser
-                ]
-                
-                self.database.child("users").child(user.uid).child("swipedBy").setValue(newCollection, withCompletionBlock: { error, _ in
-                    guard error == nil else {
-                        completion(false)
-                        return
-                    }
-                    
-                    completion(true)
-                })
-            }
-        })
+    public func swipe(uid: String) {
+        self.database.child("users")
     }
     
-//    public func search(params: [String: String]) {
-//        // take a dict of search parameters and return matching users
-//        guard let curUser = FirebaseAuth.Auth.auth().currentUser?.uid else { return }
-//        let matches: [String] = []
+//    public func searchUsers(data: [String: [Any]]) -> [String] {
+//        // take an array of search parameter arrays and returns an array of all matching users
+//        var results: [String] = []
 //
-//        self.database.child("users")
-//            .observeSingleEvent(of: .value, with: { (snapshot) in
-//            // Get user value
-//            let value = snapshot.value as? NSDictionary
-//            for p in params {
-//                if value[p] != params[p] {
-//                    break
+//        Firestore
+//            .firestore()
+//            .collection(FBKeys.CollectionPath.users)
+//
+//            //AGE PREF
+////            .whereField(FBKeys.User.age, in: data[FBKeys.User.agePref]!)
+//
+//            //GENDER PREF
+//            .whereField(FBKeys.User.pronouns, in: data[FBKeys.User.genderPref]!)
+//
+//            //LOC PREF
+//            .whereField(FBKeys.User.loc, isEqualTo: data[FBKeys.User.locPref]!)
+//
+//            //MBTI PREF
+//            .whereField(FBKeys.User.mbti, in: data[FBKeys.User.mbtiPref]!)
+//
+//            //ZODIAC PREF
+//            .whereField(FBKeys.User.zodiac, isEqualTo: data[FBKeys.User.zodPref]!)
+//
+//            //EMOJI PREF
+//            .whereField(FBKeys.User.emoji, isEqualTo: data[FBKeys.User.emojiPref]!)
+//
+//            .getDocuments() { (qSnapshot, err) in
+//                if let err = err {
+//                    print("Error getting users: \(err)")
+//                } else {
+//                    for document in qSnapshot!.documents {
+//                        results.append(document.documentID)
+//                        print("\(document.documentID) => \(document.data())")
+//                    }
 //                }
 //            }
-//
-//
-//            // ...
-//        }) { (error) in
-//            print(error.localizedDescription)
-//        }
+//        return results
 //    }
     
-    public func getSwipedBy() -> [String] {
-        // pulls all users from current user's swipedBy array, returns array of uids
-        var uids: [String] = []
-        
-        guard let curUser = FirebaseAuth.Auth.auth().currentUser?.uid else { return [] }
-        
-        self.database.child(curUser).child("swipedBy").observeSingleEvent(of: .value, with: { (snapshot) in
-            // Get user value
-            let value = snapshot.value as? NSDictionary
-            uids = value?.allValues as! [String]
-            
-            // ...
-        }) { (error) in
-            print(error.localizedDescription)
-        }
-        return uids
-    }
+    //    // MARK: - FB Firestore User swipe
+    //    static func swipe(uid: String, data: [String]) {
+    //        // takes a uid(1) and an array of uids(2)
+    //        // adds all 2s to 1's swiped array and adds 1 to all 2s' swipedBy arrays
+    //        let cur = Auth.auth().currentUser!.uid
+    //        Firestore
+    //            .firestore()
+    //            .collection(FBKeys.CollectionPath.users)
+    //            .document(cur)
+    //            .getDocument() { (doc, err) in
+    //            if let doc = doc, doc.exists {
+    //                data = doc.data()!
+    //                } else {
+    //                print("Document does not exist")
+    //            }
+    //        }
+    //        return data
+    //    }
+    //
+    //    // MARK: - FB Firestore User matches
+    //    static func getMatches(uid: String, data: [String]) {
+    //        // checks swiped array against swipedBy array to find all matches
+    //        var data: [String: Any] = [:]
+    //        let cur = Auth.auth().currentUser!.uid
+    //        Firestore
+    //            .firestore()
+    //            .collection(FBKeys.CollectionPath.users)
+    //            .document(cur)
+    //            .getDocument() { (doc, err) in
+    //            if let doc = doc, doc.exists {
+    //                data = doc.data()!
+    //                } else {
+    //                print("Document does not exist")
+    //            }
+    //        }
+    //        return data
+    //    }
 }
 
 
 
-// MARK: - Sending Messages/ Convo (MODIFY CODE TO USE UID INSTEAD OF EMAIL AS KEY)
+
+// MARK: - Sending Messages/ Convo
 extension DatabaseManager {
 
 /// creating new convo with target user
@@ -758,7 +755,7 @@ struct AppUser {
     let firstName: String
     let lastName: String
     let emailAddress: String
-    let uid: String = randomNonceString()
+    let uid: String
     // Mark fix to int for age
     let age: String
     let gender: String
@@ -771,7 +768,7 @@ struct AppUser {
     var bio: String = ""
     
     // matching
-    // var swipedBy: [String] = []
+    var swipedBy: [String] = []
     
     var safeEmail: String {
         // making this inside so we can just use this property when we use this struct
@@ -782,38 +779,6 @@ struct AppUser {
     var profilePictureFileName: String {
         // all the profile pictures are saved in the format shown below
         return "\(safeEmail)_profile_picture.png"
-    }
-    
-    static func randomNonceString(length: Int = 32) -> String {
-        precondition(length > 0)
-        let charset: Array<Character> =
-            Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
-        var result = ""
-        var remainingLength = length
-        
-        while remainingLength > 0 {
-            let randoms: [UInt8] = (0 ..< 16).map { _ in
-                var random: UInt8 = 0
-                let errorCode = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
-                if errorCode != errSecSuccess {
-                    fatalError("Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)")
-                }
-                return random
-            }
-            
-            randoms.forEach { random in
-                if length == 0 {
-                    return
-                }
-                
-                if random < charset.count {
-                    result.append(charset[Int(random)])
-                    remainingLength -= 1
-                }
-            }
-        }
-        
-        return result
     }
     
 }

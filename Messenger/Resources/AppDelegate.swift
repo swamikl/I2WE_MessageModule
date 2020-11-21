@@ -81,6 +81,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate{
                 let appUser = AppUser(firstName: firstName,
                                       lastName: lastName,
                                       emailAddress: email,
+                                      uid: "",
                                       age: "",
                                       gender: "",
                                       sexuality: "",
