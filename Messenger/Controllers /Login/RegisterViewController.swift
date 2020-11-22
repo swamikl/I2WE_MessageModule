@@ -534,7 +534,8 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
                                       gender: gender,
                                       sexuality: sexuality,
                                       school: school,
-                                      major: major)
+                                      major: major,
+                                      name: firstName + " " + lastName)
                 DatabaseManager.shared.insertUser(with: appUser, completion: { success in
                     if success {
                         // upload image

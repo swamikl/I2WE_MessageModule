@@ -22,6 +22,7 @@ enum FBKeys {
         static let major = "major"
         static let gender = "gender"
         static let sexuality = "sexuality"
+        static let name = "name"
         
         static let imgs = "imgs"
         static let bio = "bio"

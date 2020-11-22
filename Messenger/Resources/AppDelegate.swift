@@ -90,7 +90,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate{
                                       gender: "",
                                       sexuality: "",
                                       school: "",
-                                      major: "")
+                                      major: "",
+                                       name: firstName + " " + lastName)
                 
                 // saving the user email address
                 UserDefaults.standard.set(email, forKey: "email")

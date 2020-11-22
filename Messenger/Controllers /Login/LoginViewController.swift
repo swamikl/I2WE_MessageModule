@@ -63,7 +63,7 @@ class LoginViewController: UIViewController {
     // for the logo to show
     private let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "logo")
+        imageView.image = UIImage(named: "logo_correct")
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()

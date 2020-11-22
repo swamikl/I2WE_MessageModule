@@ -53,6 +53,9 @@ class ConversationsViewController: UIViewController {
         return label
     }()
     
+    // there is a problem with the chat not showing up immideatly so this is so that we can view the chat immedietly
+    private var loginObserver: NSObjectProtocol?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose,
@@ -63,6 +66,14 @@ class ConversationsViewController: UIViewController {
         setupTableView()
         fetchConversations()
         startListeningForConversations()
+        
+        loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification, object: nil, queue: .main, using: { [weak self] _ in
+                   guard let strongSelf = self else {
+                       return
+                   }
+
+                   strongSelf.startListeningForConversations()
+            })
     }
     
     private func startListeningForConversations() {
@@ -95,25 +106,56 @@ class ConversationsViewController: UIViewController {
     @objc private func didTapComposeButton() {
         let vc = NewConversationViewController()
         vc.completion = { [weak self] result in
-            self?.createNewConversation(result: result)
+            guard let strongSelf = self else {
+                return
+            }
+
+            let currentConversations = strongSelf.conversations
+
+            if let targetConversation = currentConversations.first(where: {
+                $0.otherUserEmail == DatabaseManager.safeEmail(emailAddress: result.email)
+            }) {
+                let vc = ChatViewController(with: targetConversation.otherUserEmail, id: targetConversation.id)
+                vc.isNewConversation = false
+                vc.title = targetConversation.name
+                vc.navigationItem.largeTitleDisplayMode = .never
+                strongSelf.navigationController?.pushViewController(vc, animated: true)
+            }
+            else {
+                strongSelf.createNewConversation(result: result)
+            }
         }
         let navVC = UINavigationController(rootViewController: vc)
         present(navVC, animated: true)
         
     }
     
-    private func createNewConversation(result: [String:String]) {
+   private func createNewConversation(result: SearchResult) {
+    let name = result.name
+    let email = result.email
        
-        guard let name = result["name"],
-            let email = result["email"] else {
+    // we are first going to check if a convo with these 2 users already exists
+    // if it does, we are just adding to it
+    // if it does not, create a new one
+        DatabaseManager.shared.conversationExists(iwth: email, completion: { [weak self] result in
+            guard let strongSelf = self else {
                 return
-        }
-       
-        let vc = ChatViewController(with: email, id: nil)
-        vc.isNewConversation = true
-        vc.title = name
-        vc.navigationItem.largeTitleDisplayMode = .never
-        navigationController?.pushViewController(vc, animated: true)
+            }
+            switch result {
+            case .success(let conversationId):
+                let vc = ChatViewController(with: email, id: conversationId)
+                vc.isNewConversation = false
+                vc.title = name
+                vc.navigationItem.largeTitleDisplayMode = .never
+                strongSelf.navigationController?.pushViewController(vc, animated: true)
+            case .failure(_):
+                let vc = ChatViewController(with: email, id: nil)
+                vc.isNewConversation = true
+                vc.title = name
+                vc.navigationItem.largeTitleDisplayMode = .never
+                strongSelf.navigationController?.pushViewController(vc, animated: true)
+            }
+        })
                
     }
     
@@ -170,20 +212,43 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        
+       tableView.deselectRow(at: indexPath, animated: true)
         let model = conversations[indexPath.row]
-        let vc = ChatViewController(with: model.otherUserEmail, id:model.id)
+        openConversation(model)
+        
+    }
+    
+    // doing it like this to make this more module so that we ccan call this function over and over again 
+    func openConversation(_ model: Conversation) {
+        let vc = ChatViewController(with: model.otherUserEmail, id: model.id)
         vc.title = model.name
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
-        
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 120
     }
     
+    // to delete a convo
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
+    }
     
-    
-}
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+            if editingStyle == .delete {
+                // begin delete
+                let conversationId = conversations[indexPath.row].id
+                tableView.beginUpdates()
+
+                DatabaseManager.shared.deleteConversation(conversationId: conversationId, completion: { [weak self] success in
+                    if success {
+                        self?.conversations.remove(at: indexPath.row)
+                        tableView.deleteRows(at: [indexPath], with: .left)
+                    }
+                })
+
+                tableView.endUpdates()
+            }
+        }
+    }

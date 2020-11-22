@@ -24,7 +24,7 @@ final class StorageManager {
             guard error == nil else {
                 // failed
                 print ("Failed to upload data to firebase for picture")
-                completion(.failure(StorageErrors.failedTOUpload))
+                completion(.failure(StorageErrors.failedToUpload))
                 return
             }
             
@@ -44,8 +44,57 @@ final class StorageManager {
         
     }
     
+    /// Uploading the image that will be sent in a conversation message
+    public func uploadMessagePhoto(with data: Data, fileName: String, completion: @escaping UploadPictureCompletion) {
+        // the path of the image that is being stored into firebase storage
+        storage.child("message_images/\(fileName)").putData(data, metadata: nil, completion: { [weak self] metadata, error in
+            guard error == nil else {
+                // failed to upload the image
+                print("failed to upload data to firebase for picture")
+                completion(.failure(StorageErrors.failedToUpload))
+                return
+            }
+
+            self?.storage.child("message_images/\(fileName)").downloadURL(completion: { url, error in
+                        guard let url = url else {
+                            print("Failed to get download url")
+                            completion(.failure(StorageErrors.failedToGetDownloadUrl))
+                            return
+                        }
+
+                        let urlString = url.absoluteString
+                        print("download url returned: \(urlString)")
+                        completion(.success(urlString))
+                    })
+                })
+            }
+    
+    // to upload the videos to be sent through the chat
+     public func uploadMessageVideo(with fileUrl: URL, fileName: String, completion: @escaping UploadPictureCompletion) {
+           storage.child("message_videos/\(fileName)").putFile(from: fileUrl, metadata: nil, completion: { [weak self] metadata, error in
+               guard error == nil else {
+                   // failed
+                   print("could not upload the video to firebase")
+                   completion(.failure(StorageErrors.failedToUpload))
+                   return
+               }
+
+               self?.storage.child("message_videos/\(fileName)").downloadURL(completion: { url, error in
+                   guard let url = url else {
+                       print("Failed to get download url")
+                       completion(.failure(StorageErrors.failedToGetDownloadUrl))
+                       return
+                   }
+
+                   let urlString = url.absoluteString
+                   print("download url returned: \(urlString)")
+                   completion(.success(urlString))
+               })
+           })
+       }
+    
     public enum StorageErrors: Error{
-        case failedTOUpload
+        case failedToUpload
         case failedToGetDownloadUrl
     }
     
