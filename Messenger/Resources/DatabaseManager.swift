@@ -167,35 +167,6 @@ extension DatabaseManager {
     }
     
     
-    
-    
-    //public func getAllUsers(completion: @escaping (Result<[[String: String]], Error>) -> Void) {
-    //    database.child("users").observeSingleEvent(of: .value, with: { snapshot in
-    //        guard let value = snapshot.value as? [[String: String]] else {
-    //            print("error is here")
-    //            completion(.failure(DatabaseError.failedToFetch))
-    //            return
-    //        }
-    //        print(value)
-    //        completion(.success(value))
-    //    })
-    //}
-    //public func getAllUsers(completion: @escaping (Result<[[String: String]], Error>) -> Void) {
-    //        database.child("users").observeSingleEvent(of: .value, with: { snapshot in
-    //            guard let value = snapshot.value as? [[String: String]] else {
-    //                print("error is here")
-    //                completion(.failure(DatabaseError.failedToFetch))
-    //                return
-    //            }
-    //            print(value)
-    //            completion(.success(value))
-    //        })
-    //    }
-    //
-    
-    
-    
-    
     public func getAllUsers(completion: @escaping (Result<[[String: String]], Error>) -> Void) {
         let parentRef = database.child("users")
         var userList = [[String:String]]()
@@ -233,12 +204,74 @@ extension DatabaseManager {
         completion(.failure(DatabaseError.failedToFetch))
     }
     
+    //    MARK: - SWIPE FUNCS
+
+        public func swipe(with targetUserUID: String, completion: @escaping (Bool) -> Void) {
+            // first, get uid of current user
+            guard let curUser = FirebaseAuth.Auth.auth().currentUser?.uid else { return }
+            let parentRef = database.child("users")
+
+            // second, get uid of swiped user (the argument)
+
+            // third, append current uid to swiped uid swipedBy collection
+            parentRef.child("\(targetUserUID)/swipedBy").observeSingleEvent(of: .value, with: { snapshot in
+                if var swipeCollection = snapshot.value as? [String] {
+                    // append within user to swipedBy array
+                    swipeCollection.append(curUser)
+
+                    self.database.child("users").child("\(targetUserUID)/swipedBy").setValue(swipeCollection, withCompletionBlock: { error, _ in
+                        guard error == nil else {
+                            completion(false)
+                            return
+                        }
+
+                        completion(true)
+                    })
+                }
+                else {
+                    // create that array
+                    //MARK ADD all the info to the new collection
+                    let newCollection: [String] = [
+                        curUser
+                    ]
+
+                    self.database.child("users").child("\(targetUserUID)/swipedBy").setValue(newCollection, withCompletionBlock: { error, _ in
+                        guard error == nil else {
+                            completion(false)
+                            return
+                        }
+
+                        completion(true)
+                    })
+                }
+            })
+        }
+
+
+        public func getMySwipes(completion: @escaping (Result<[String], Error>) -> Void) {
+            guard let curUser = FirebaseAuth.Auth.auth().currentUser?.uid else { return }
+            let parentRef = database.child("users")
+            var swipeList = [String]()
+
+            parentRef.child("\(curUser)/swipedBy").observeSingleEvent(of: .value) { snapshot in
+                let value = snapshot.value as! [String:String]
+                swipeList = Array(value.values)
+                print("swipeList \(swipeList)")
+                completion(.success(swipeList))
+                return
+            }
+            completion(.failure(DatabaseError.failedToFetch))
+            return
+        }
+    
     
     public enum DatabaseError: Error {
         case failedToFetch
     }
     
 }
+
+
 
 
 // how the users are being stored in the database for eacch user
