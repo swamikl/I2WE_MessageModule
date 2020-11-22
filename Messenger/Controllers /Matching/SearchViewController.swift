@@ -271,7 +271,7 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     // for the logo to show
     private let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "logo")
+        imageView.image = UIImage(named: "logo_correct")
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
@@ -327,8 +327,8 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
 
         let size = scrollView.width/3
         // the logo size
-        imageView.frame = CGRect(x: (scrollView.width - size)/2,
-                                 y: 20,
+        imageView.frame = CGRect(x: (scrollView.width - size)/2 + 10,
+                                 y: 50,
                                  width: size,
                                  height: size)
 

@@ -348,6 +348,9 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         // when user hits return on password it calls login function
         emailField.delegate = self
         passwordField.delegate = self
+        genderField.delegate = self
+        majorField.delegate = self
+        ageField.delegate = self
         
         // adding subviews: what is being shown on the screen
         // we are adding elements to the scroll view, so if page fills up, the container will allow for
@@ -526,6 +529,10 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
                     print("Error creating user \(error)")
                     return
                 }
+                
+                UserDefaults.standard.setValue(email, forKey: "email")
+                UserDefaults.standard.setValue("\(firstName) \(lastName)", forKey: "name")
+                
                 let appUser = AppUser(firstName: firstName,
                                       lastName: lastName,
                                       emailAddress: email,

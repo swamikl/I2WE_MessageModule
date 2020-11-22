@@ -17,6 +17,7 @@ import Foundation
 import FirebaseDatabase
 import FirebaseAuth
 import MessageKit
+import CoreLocation
 
 // we do not want this class to be subclassed
 final class DatabaseManager {
@@ -425,7 +426,9 @@ extension DatabaseManager {
                         return
                     }
                     self?.finishingSetupForConversations(name: name,
-                                                         conversationID: conversationID, firstMessage: firstMessage, completion: completion)
+                                                         conversationID: conversationID,
+                                                         firstMessage: firstMessage,
+                                                         completion: completion)
                     
                 })
                 
@@ -440,7 +443,9 @@ extension DatabaseManager {
                         return
                     }
                     self?.finishingSetupForConversations(name: name,
-                                                         conversationID: conversationID, firstMessage: firstMessage, completion: completion)
+                                                         conversationID: conversationID,
+                                                         firstMessage: firstMessage,
+                                                         completion: completion)
                     
                 })
                 
@@ -607,7 +612,17 @@ extension DatabaseManager {
                                       size: CGSize(width: 300, height: 300))
                     kind = .video(media)
                 }
-                    
+                    else if type == "location" {
+                        let locationComponents = content.components(separatedBy: ",")
+                        guard let longitude = Double(locationComponents[0]),
+                            let latitude = Double(locationComponents[1]) else {
+                            return nil
+                        }
+                        print("Rendering location; long=\(longitude) | lat=\(latitude)")
+                        let location = Location(location: CLLocation(latitude: latitude, longitude: longitude),
+                                                size: CGSize(width: 300, height: 300))
+                        kind = .location(location)
+                    }
                 else {
                     kind = .text(content)
                 }
@@ -676,8 +691,9 @@ extension DatabaseManager {
                 if let targetUrlString = mediaItem.url?.absoluteString {
                     message = targetUrlString
                 }
-            case .location(_):
-                break
+            case .location(let locationData):
+            let location = locationData.location
+            message = "\(location.coordinate.longitude),\(location.coordinate.latitude)"
             case .emoji(_):
                 break
             case .audio(_):
@@ -696,6 +712,7 @@ extension DatabaseManager {
                 return
             }
             
+            //MARK- IDK WHY WE DID THIS AGAIN
             let currentUserEmail = DatabaseManager.safeEmail(emailAddress: myEmail)
             
             let newMessageEntry: [String: Any] = [
@@ -950,7 +967,7 @@ struct AppUser {
     let sexuality: String
     let school: String
     let major: String
-    let name: String 
+    let name: String
     // var name = firstName + " " + lastName
     
     // opts

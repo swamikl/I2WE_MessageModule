@@ -95,13 +95,12 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         
         // we are going to send a notificatoin from the app delegate and listen in here for the purpose of login
-        loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification, object: nil, queue: .main,
-                                                               using: { [weak self] _ in
-                                                                guard let strongSelf = self else {
-                                                                    return
-                                                                }
-                                                                strongSelf.navigationController?.dismiss(animated: true,
-                                                                                                         completion: nil)
+    loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification, object: nil, queue: .main, using: { [weak self] _ in
+        guard let strongSelf = self else {
+            return
+        }
+
+        strongSelf.navigationController?.dismiss(animated: true, completion: nil)
         })
         
         GIDSignIn.sharedInstance()?.presentingViewController = self
@@ -240,10 +239,11 @@ class LoginViewController: UIViewController {
                 switch result {
                 case .success(let data):
                     guard let userData = data as? [String: Any],
-                        let firstName = userData["first_name"] as? String,
-                        let lastName = userData["last_name"] as? String else {
+                        let firstName = userData["firstName"] as? String,
+                        let lastName = userData["lastName"] as? String else {
                             return
                     }
+                    
                     UserDefaults.standard.set("\(firstName) \(lastName)", forKey: "name")
 
                 case .failure(let error):

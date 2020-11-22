@@ -64,7 +64,7 @@ class ConversationsViewController: UIViewController {
         view.addSubview(tableView)
         view.addSubview(noConversationsLabel)
         setupTableView()
-        fetchConversations()
+        // fetchConversations()
         startListeningForConversations()
         
         loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification, object: nil, queue: .main, using: { [weak self] _ in
@@ -89,15 +89,21 @@ class ConversationsViewController: UIViewController {
             case .success(let conversations):
                 print("got the conversations")
                 guard !conversations.isEmpty else {
+                    self?.tableView.isHidden = true
+                    self?.noConversationsLabel.isHidden = false
                     return
                 }
-
+                
+                self?.noConversationsLabel.isHidden = true
+                self?.tableView.isHidden = false
                 self?.conversations = conversations
 
                 DispatchQueue.main.async {
                     self?.tableView.reloadData()
                 }
             case .failure(let error):
+                self?.tableView.isHidden = true
+                self?.noConversationsLabel.isHidden = false
                 print("did not get the conversations: \(error)")
             }
         })
@@ -162,6 +168,10 @@ class ConversationsViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.frame = view.bounds
+        noConversationsLabel.frame = CGRect(x: 10,
+        y: (view.height-100)/2,
+        width: view.width-20,
+        height: 100)
     }
     
     
@@ -190,10 +200,6 @@ class ConversationsViewController: UIViewController {
     }
     
     
-    // fetching things from firebase
-    private func fetchConversations() {
-        tableView.isHidden = false
-       }
     
 }
 
@@ -218,7 +224,7 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
         
     }
     
-    // doing it like this to make this more module so that we ccan call this function over and over again 
+    // doing it like this to make this more module so that we ccan call this function over and over again
     func openConversation(_ model: Conversation) {
         let vc = ChatViewController(with: model.otherUserEmail, id: model.id)
         vc.title = model.name
