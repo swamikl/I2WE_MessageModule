@@ -80,7 +80,7 @@
         <scene sceneID="SGc-QO-iwM">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="fvh-jG-o9o" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Chats" id="vdp-IU-nR4"/>
+                    <tabBarItem key="tabBarItem" title="Chats" image="message.fill" catalog="system" id="vdp-IU-nR4"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="hU1-24-8di">
                         <rect key="frame" x="0.0" y="44" width="414" height="96"/>
@@ -99,7 +99,7 @@
         <scene sceneID="VYz-8Y-kTm">
             <objects>
                 <navigationController id="2N0-hz-r7q" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Profile" id="utu-Sm-cAI"/>
+                    <tabBarItem key="tabBarItem" title="Profile" image="person.circle.fill" catalog="system" id="utu-Sm-cAI"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="6DF-9u-7fp">
                         <rect key="frame" x="0.0" y="44" width="414" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -116,7 +116,7 @@
         <scene sceneID="yaF-kG-msL">
             <objects>
                 <navigationController id="coo-z8-t54" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Search" id="tDs-dR-ERc"/>
+                    <tabBarItem key="tabBarItem" title="Search" image="person.3.fill" catalog="system" id="tDs-dR-ERc"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="hAc-t7-S9v">
                         <rect key="frame" x="0.0" y="44" width="414" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -146,4 +146,9 @@
             <point key="canvasLocation" x="-3062" y="749"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="message.fill" catalog="system" width="128" height="113"/>
+        <image name="person.3.fill" catalog="system" width="128" height="61"/>
+        <image name="person.circle.fill" catalog="system" width="128" height="121"/>
+    </resources>
 </document>

@@ -1,11 +1,12 @@
+////
+////  ChatViewController.swift
+////  Messenger
+////
+////  Created by Swamik Lamichhane on 11/7/20.
+////  Copyright © 2020 Swamik Lamichhane. All rights reserved.
+//// Followed a tutorial for a IOS messenging app to learn how to use swift and building an IOS app
+//// https://www.youtube.com/playlist?list=PL5PR3UyfTWvdlk-Qi-dPtJmjTj-2YIMMf
 //
-//  ChatViewController.swift
-//  Messenger
-//
-//  Created by Swamik Lamichhane on 11/7/20.
-//  Copyright © 2020 Swamik Lamichhane. All rights reserved.
-//
-
 import UIKit
 import MessageKit
 import InputBarAccessoryView
@@ -126,7 +127,7 @@ class ChatViewController: MessagesViewController {
                    
                 }
                 
-            case .failure(let _):
+            case .failure(let error):
                 print("could not get messages")
             }
         })
@@ -148,10 +149,11 @@ class ChatViewController: MessagesViewController {
         func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
             guard !text.replacingOccurrences(of: " ", with: "").isEmpty,
                 let selfSender = self.selfSender,
-                let messageId = createMessageId(),
-                let conversationId = createChatId() else {
+                let messageId = createMessageId() else {
                 return
             }
+            
+           
             
             let message = Message(sender: selfSender,
             messageId: messageId,
@@ -207,22 +209,6 @@ class ChatViewController: MessagesViewController {
             return newIdentifier
         }
         
-        private func createChatId() -> String? {
-                   // making a random message id with date, otherUesrEmail, senderEmail, and a randomInt
-                   
-                   // getting the email of the person currently using the app
-                   guard let currentUserEmail = UserDefaults.standard.value(forKey: "email") as? String else {
-                       return nil
-                   }
-
-                   let safeCurrentEmail = DatabaseManager.safeEmail(emailAddress: currentUserEmail)
-
-                   let newIdentifier = "\(otherUserEmail)_\(safeCurrentEmail)"
-
-                   print("created conversation id: \(newIdentifier)")
-
-                   return newIdentifier
-               }
         
         
         

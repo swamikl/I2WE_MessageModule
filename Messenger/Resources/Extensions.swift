@@ -6,7 +6,8 @@
 //  Copyright © 2020 Swamik Lamichhane. All rights reserved.
 // this file is so that we do not have to type long things when getting the width or something similar
 //
-
+// Followed a tutorial for a IOS messenging app to learn how to use swift and building an IOS app
+// https://www.youtube.com/playlist?list=PL5PR3UyfTWvdlk-Qi-dPtJmjTj-2YIMMf
 
 // with these defined we can go back to the logInViewCOntroller and set the things for the logo
 import Foundation

@@ -1,8 +1,8 @@
 //
-//  ChatModels.swift
+//  ProfileViewModel.swift
 //  Messenger
 //
-//  Created by Swamik Lamichhane on 11/17/20.
+//  Created by Swamik Lamichhane on 11/21/20.
 //  Copyright © 2020 Swamik Lamichhane. All rights reserved.
 //
 

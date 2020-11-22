@@ -486,5 +486,3 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         }
     }
 }
-
-

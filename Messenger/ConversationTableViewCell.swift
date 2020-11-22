@@ -2,9 +2,13 @@
 //  ConversationTableViewCell.swift
 //  Messenger
 //
-//  Created by Swamik Lamichhane on 11/9/20.
+//  Created by Swamik Lamichhane on 11/21/20.
 //  Copyright © 2020 Swamik Lamichhane. All rights reserved.
-//
+// Followed a tutorial for a IOS messenging app to learn how to use swift and building an IOS app
+// https://www.youtube.com/playlist?list=PL5PR3UyfTWvdlk-Qi-dPtJmjTj-2YIMMf
+
+
+// code is made so that the conversation view controller is cleaner and we ae more module
 
 import UIKit
 import SDWebImage
@@ -66,8 +70,8 @@ class ConversationTableViewCell: UITableViewCell {
     }
 
     public func configure(with model: Conversation) {
-        self.userMessageLabel.text = model.latestMessage.text
-        self.userNameLabel.text = model.name
+        userMessageLabel.text = model.latestMessage.text
+        userNameLabel.text = model.name
 
         let path = "images/\(model.otherUserEmail)_profile_picture.png"
         StorageManager.shared.downloadURL(for: path, completion: { [weak self] result in

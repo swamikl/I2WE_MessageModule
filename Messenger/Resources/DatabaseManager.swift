@@ -8,6 +8,8 @@
 
 // this is going to be the file that will handle all of the database read and write
 // this is so that we will not have redundent code in all of the controllers
+// Referenced an IOS messenging app to learn how to use swift and building an IOS app.
+// https://www.youtube.com/playlist?list=PL5PR3UyfTWvdlk-Qi-dPtJmjTj-2YIMMf
 
 
 
@@ -49,7 +51,6 @@ extension DatabaseManager {
 }
 
 // MARK: - Functions to Manage the Accounts
-
 extension DatabaseManager {
     
     // this is to make sure that people cannot register with the same email twice
@@ -83,7 +84,6 @@ extension DatabaseManager {
     /// inserts new user to database
     
     // age, gender, school, major, relationshipType, party?
-
 
     //MARK- New insert
     public func insertUser(with user: AppUser, completion: @escaping (Bool) -> Void) {
@@ -177,7 +177,6 @@ extension DatabaseManager {
 //        completion(.success(value))
 //    })
 //}
-
 //public func getAllUsers(completion: @escaping (Result<[[String: String]], Error>) -> Void) {
 //        database.child("users").observeSingleEvent(of: .value, with: { snapshot in
 //            guard let value = snapshot.value as? [[String: String]] else {

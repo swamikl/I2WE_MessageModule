@@ -6,6 +6,7 @@
 //  Copyright © 2020 Swamik Lamichhane. All rights reserved.
 //
 
+
 import UIKit
 import FirebaseAuth
 import JGProgressHUD
@@ -617,7 +618,6 @@ extension RegisterViewController: UITextFieldDelegate{
 
 // for choosing the picture or taking a picture for the profile picture
 // when users want to choose a profile pic, they get options on how to choose it
-
 extension RegisterViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func presentPhotoActionSheet(){
@@ -680,6 +680,3 @@ extension RegisterViewController: UIImagePickerControllerDelegate, UINavigationC
     }
     
 }
-
-
-
