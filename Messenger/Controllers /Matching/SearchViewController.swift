@@ -483,14 +483,11 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
 
         self.spinner.dismiss()
 
-        var results = [[String:String]]()
+        var results = users
         for (key, val) in params {
             if val != "" {
-                results = self.users.filter({
-                    if $0[key]! == val {
-                        return true
-                    }
-                    return false
+                results = results.filter({
+                    return $0[key]! == val
                 })
             }
         }
