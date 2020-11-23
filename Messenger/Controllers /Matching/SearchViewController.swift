@@ -487,7 +487,6 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         }
 
         self.results = results
-        updateUI()
     }
 
 

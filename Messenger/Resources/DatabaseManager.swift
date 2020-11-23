@@ -179,6 +179,7 @@ extension DatabaseManager {
             for user_child in snapshot.children {
                 let user_snap = user_child as! DataSnapshot
                 let value = user_snap.value as! [String:String]
+                let uid = user_snap.key
                 // variables
                 let name: String = value["name"]!
                 let email: String = value["email"]!
@@ -188,7 +189,8 @@ extension DatabaseManager {
                 let school: String = value["school"]!
                 let major: String = value["major"]!
                 
-                let userDict = ["name": name,
+                let userDict = ["uid": uid,
+                                "name": name,
                                 "email": email,
                                 "gender": gender,
                                 "sexuality": sexualty,
@@ -207,63 +209,63 @@ extension DatabaseManager {
     
     //    MARK: - SWIPE FUNCS
 
-        public func swipe(with targetUserUID: String, completion: @escaping (Bool) -> Void) {
-            // first, get uid of current user
-            guard let curUser = FirebaseAuth.Auth.auth().currentUser?.uid else { return }
-            let parentRef = database.child("users")
-
-            // second, get uid of swiped user (the argument)
-
-            // third, append current uid to swiped uid swipedBy collection
-            parentRef.child("\(targetUserUID)/swipedBy").observeSingleEvent(of: .value, with: { snapshot in
-                if var swipeCollection = snapshot.value as? [String] {
-                    // append within user to swipedBy array
-                    swipeCollection.append(curUser)
-
-                    self.database.child("users").child("\(targetUserUID)/swipedBy").setValue(swipeCollection, withCompletionBlock: { error, _ in
-                        guard error == nil else {
-                            completion(false)
-                            return
-                        }
-
-                        completion(true)
-                    })
-                }
-                else {
-                    // create that array
-                    //MARK ADD all the info to the new collection
-                    let newCollection: [String] = [
-                        curUser
-                    ]
-
-                    self.database.child("users").child("\(targetUserUID)/swipedBy").setValue(newCollection, withCompletionBlock: { error, _ in
-                        guard error == nil else {
-                            completion(false)
-                            return
-                        }
-
-                        completion(true)
-                    })
-                }
-            })
-        }
-
-
-        public func getMySwipes(completion: @escaping (Result<[String], Error>) -> Void) {
-            guard let curUser = FirebaseAuth.Auth.auth().currentUser?.uid else { return }
-            let parentRef = database.child("users")
-            var swipeList = [String]()
-
-            parentRef.child("\(curUser)/swipedBy").observeSingleEvent(of: .value) { snapshot in
-                let value = snapshot.value as! [String:String]
-                swipeList = Array(value.values)
-                print("swipeList \(swipeList)")
-                completion(.success(swipeList))
-                return
+    public func swipe(with targetUserUID: String, completion: @escaping (Bool) -> Void) {
+        // first, get uid of current user
+        guard let curUser = FirebaseAuth.Auth.auth().currentUser?.uid else { return }
+        let parentRef = database.child("users")
+        
+        // second, get uid of swiped user (the argument)
+        
+        // third, append current uid to swiped uid swipedBy collection
+        parentRef.child("\(targetUserUID)/swipedBy").observeSingleEvent(of: .value, with: { snapshot in
+            if var swipeCollection = snapshot.value as? [String] {
+                // append within user to swipedBy array
+                swipeCollection.append(curUser)
+                
+                self.database.child("users").child("\(targetUserUID)/swipedBy").setValue(swipeCollection, withCompletionBlock: { error, _ in
+                    guard error == nil else {
+                        completion(false)
+                        return
+                    }
+                    
+                    completion(true)
+                })
             }
-            completion(.failure(DatabaseError.failedToFetch))
+            else {
+                // create that array
+                //MARK ADD all the info to the new collection
+                let newCollection: [String] = [
+                    curUser
+                ]
+                
+                self.database.child("users").child("\(targetUserUID)/swipedBy").setValue(newCollection, withCompletionBlock: { error, _ in
+                    guard error == nil else {
+                        completion(false)
+                        return
+                    }
+                    
+                    completion(true)
+                })
+            }
+        })
+    }
+    
+    
+    public func getMySwipes(completion: @escaping (Result<[String], Error>) -> Void) {
+        guard let curUser = FirebaseAuth.Auth.auth().currentUser?.uid else { return }
+        let parentRef = database.child("users")
+        var swipeList = [String]()
+        
+        parentRef.child("\(curUser)/swipedBy").observeSingleEvent(of: .value) { snapshot in
+            let value = snapshot.value as! [String:String]
+            swipeList = Array(value.values)
+            print("swipeList \(swipeList)")
+            completion(.success(swipeList))
             return
         }
+        completion(.failure(DatabaseError.failedToFetch))
+        return
+    }
     
     
     public enum DatabaseError: Error {
