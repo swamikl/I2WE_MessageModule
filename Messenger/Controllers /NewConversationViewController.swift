@@ -32,7 +32,7 @@ class NewConversationViewController: UIViewController {
     private let tableView: UITableView = {
         let table = UITableView()
         table.isHidden = true
-       table.register(NewConversationCell.self,
+        table.register(NewConversationCell.self,
         forCellReuseIdentifier: NewConversationCell.identifier)
         return table
     }()

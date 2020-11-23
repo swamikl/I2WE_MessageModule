@@ -57,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate{
     }
     
     // for Signing In with Google
-    // Not being implimenting with this first release because we could not grab all the data from google, but it can work
+    
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
         guard error == nil else {
             if error != nil {

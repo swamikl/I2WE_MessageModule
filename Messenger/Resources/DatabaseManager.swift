@@ -182,12 +182,15 @@ extension DatabaseManager {
                 let uid = user_snap.key
                 // variables
                 let name: String = value["name"]!
+                print(name)
                 let email: String = value["email"]!
                 let age: String = value["age"]!
                 let gender: String = value["gender"]!
                 let sexualty: String = value["sexuality"]!
                 let school: String = value["school"]!
+                print(school)
                 let major: String = value["major"]!
+                print("i got here")
                 
                 let userDict = ["uid": uid,
                                 "name": name,
@@ -197,7 +200,7 @@ extension DatabaseManager {
                                 "school": school,
                                 "major": major,
                                 "age": age]
-                print(userDict)
+                print("the userDict is: \(userDict)")
                 userList.append(userDict)
                 
             }
@@ -206,6 +209,37 @@ extension DatabaseManager {
         }
         completion(.failure(DatabaseError.failedToFetch))
     }
+    
+    public func getProfile(uid: String, completion: @escaping (Result<[String: String], Error>) -> Void) {
+    //        let mySafeEmail = DatabaseManager.safeEmail(emailAddress: email)
+            let parentRef = database.child("users").child(uid)
+            print(parentRef)
+            var userDict = [String:String]()
+            parentRef.observeSingleEvent(of: .value) { snapshot in
+                print(snapshot)
+                let user_snap = snapshot
+                let value = user_snap.value as! [String:String]
+                // variables
+                let name: String = value["name"]!
+                let email: String = value["email"]!
+                let age: String = value["age"]!
+                let gender: String = value["gender"]!
+                let sexualty: String = value["sexuality"]!
+                let school: String = value["school"]!
+                let major: String = value["major"]!
+                     
+                userDict = ["name": name,
+                            "email": email,
+                            "gender": gender,
+                            "sexuality": sexualty,
+                            "school": school,
+                            "major": major,
+                            "age": age]
+                
+                completion(.success(userDict))
+                }
+            completion(.failure(DatabaseError.failedToFetch))
+        }
     
     //    MARK: - SWIPE FUNCS
 
@@ -252,13 +286,14 @@ extension DatabaseManager {
     
     
     public func getMySwipes(completion: @escaping (Result<[String], Error>) -> Void) {
-        guard let curUser = FirebaseAuth.Auth.auth().currentUser?.uid else { return }
-        let parentRef = database.child("users")
+        guard let email = FirebaseAuth.Auth.auth().currentUser?.email else { return }
+        
+        let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
         var swipeList = [String]()
         
-        parentRef.child("\(curUser)/swipedBy").observeSingleEvent(of: .value) { snapshot in
-            let value = snapshot.value as! [String:String]
-            swipeList = Array(value.values)
+        database.child("\(safeEmail)/swipedBy").observeSingleEvent(of: .value) { snapshot in
+            let value = snapshot.value as! [String]
+            swipeList = value
             print("swipeList \(swipeList)")
             completion(.success(swipeList))
             return
