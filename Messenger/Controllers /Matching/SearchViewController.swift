@@ -17,6 +17,7 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     public var completion: (([String:String]) -> Void)?
 
     private var users = [[String: String]]()
+    private var swipeList = [String]()
     private var results = [[String: String]]()
 
     private var query = [String: String]()
@@ -33,7 +34,7 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.layer.borderColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
         field.placeholder = "Age"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -47,7 +48,7 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.layer.borderColor = CGColor.init(srgbRed: 211, green: 211, blue: 211, alpha: 255)
         field.placeholder = "School"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -61,7 +62,7 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.layer.borderColor = CGColor.init(srgbRed: 211, green: 211, blue: 211, alpha: 255)
         field.placeholder = "Gender"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -75,7 +76,7 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.layer.borderColor = CGColor.init(srgbRed: 211, green: 211, blue: 211, alpha: 255)
         field.placeholder = "Sexuality"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -89,7 +90,7 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.layer.borderColor = CGColor.init(srgbRed: 211, green: 211, blue: 211, alpha: 255)
         field.placeholder = "Major"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))

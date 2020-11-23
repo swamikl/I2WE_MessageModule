@@ -79,7 +79,7 @@ extension ResultsViewController {
             cardView.frame = CGRect(x: xPosition, y: 20, width: UIScreen.main.bounds.width - 40, height: scrollView.frame.height * 0.7)
             cardView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             cardView.layer.borderWidth = 5
-            cardView.layer.borderColor = CGColor(gray: 0, alpha: 255)
+            cardView.layer.borderColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
 
             // IMAGE
             let pathRef = "images/\(DatabaseManager.safeEmail(emailAddress: results[count][FBKeys.User.email]!))_profile_picture.png"

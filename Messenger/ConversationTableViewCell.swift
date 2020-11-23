@@ -70,6 +70,7 @@ class ConversationTableViewCell: UITableViewCell {
     }
 
     public func configure(with model: Conversation) {
+        
         userMessageLabel.text = model.latestMessage.text
         userNameLabel.text = model.name
 

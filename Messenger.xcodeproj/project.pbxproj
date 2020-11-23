@@ -32,7 +32,6 @@
 		D690A8AA253E7C4B008973D4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D690A8A9253E7C4B008973D4 /* LoginViewController.swift */; };
 		D690A8AC253E7C55008973D4 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D690A8AB253E7C55008973D4 /* RegisterViewController.swift */; };
 		D690A8AE253E7C6C008973D4 /* PhotoViewerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D690A8AD253E7C6C008973D4 /* PhotoViewerViewController.swift */; };
-		D690A8B0253E7C7B008973D4 /* VideoPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D690A8AF253E7C7B008973D4 /* VideoPlayerViewController.swift */; };
 		D690A8B2253E7C87008973D4 /* NewConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D690A8B1253E7C87008973D4 /* NewConversationViewController.swift */; };
 		D690A8B4253E7C95008973D4 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D690A8B3253E7C95008973D4 /* ProfileViewController.swift */; };
 		D690A8B7253E82E8008973D4 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D690A8B6253E82E8008973D4 /* Extensions.swift */; };
@@ -88,7 +87,6 @@
 		D690A8A9253E7C4B008973D4 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		D690A8AB253E7C55008973D4 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		D690A8AD253E7C6C008973D4 /* PhotoViewerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewerViewController.swift; sourceTree = "<group>"; };
-		D690A8AF253E7C7B008973D4 /* VideoPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerViewController.swift; sourceTree = "<group>"; };
 		D690A8B1253E7C87008973D4 /* NewConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationViewController.swift; sourceTree = "<group>"; };
 		D690A8B3253E7C95008973D4 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		D690A8B6253E82E8008973D4 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -199,7 +197,6 @@
 				D690A877253E7A45008973D4 /* ConversationsViewController.swift */,
 				D690A8B5253E7CF6008973D4 /* Login */,
 				D690A8AD253E7C6C008973D4 /* PhotoViewerViewController.swift */,
-				D690A8AF253E7C7B008973D4 /* VideoPlayerViewController.swift */,
 				D690A8B1253E7C87008973D4 /* NewConversationViewController.swift */,
 				D690A8B3253E7C95008973D4 /* ProfileViewController.swift */,
 				D626380E25572A070021ABAB /* ChatViewController.swift */,
@@ -471,7 +468,6 @@
 				D64103132569EAB0004428E9 /* LocationPickerViewController.swift in Sources */,
 				D641030F2569DD4B004428E9 /* DatabaseManager.swift in Sources */,
 				D690A878253E7A45008973D4 /* ConversationsViewController.swift in Sources */,
-				D690A8B0253E7C7B008973D4 /* VideoPlayerViewController.swift in Sources */,
 				D641030A2569C7D4004428E9 /* SearchResult.swift in Sources */,
 				D690A8B7253E82E8008973D4 /* Extensions.swift in Sources */,
 				D690A874253E7A45008973D4 /* AppDelegate.swift in Sources */,

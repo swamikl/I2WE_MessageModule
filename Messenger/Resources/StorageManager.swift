@@ -14,13 +14,21 @@ final class StorageManager {
     
     static let shared = StorageManager()
     
+    // so that users are forced to use shared and not make their own reference
+    private init() {}
+    
     private let storage = Storage.storage().reference()
     
     public typealias UploadPictureCompletion = (Result<String, Error>)-> Void
     /// Uploads picture to firebase storage and returns completion with url string to download
     public func uploadProfilePicture (with data: Data, fileName: String, completion: @escaping UploadPictureCompletion){
         
-        storage.child("images/\(fileName)").putData(data, metadata: nil, completion: {metadata, error in
+        storage.child("images/\(fileName)").putData(data, metadata: nil, completion: { [weak self] metadata, error in
+            
+            guard let strongSelf = self else {
+                return
+            }
+            
             guard error == nil else {
                 // failed
                 print ("Failed to upload data to firebase for picture")
@@ -28,7 +36,7 @@ final class StorageManager {
                 return
             }
             
-            self.storage.child("images/\(fileName)").downloadURL(completion: { url, error in
+            strongSelf.storage.child("images/\(fileName)").downloadURL(completion: { url, error in
                 guard let url = url else {
                     print ("Failed to get the download URL")
                     completion(.failure(StorageErrors.failedToGetDownloadUrl))
