@@ -9,6 +9,7 @@
 import UIKit
 import SwiftUI
 import JGProgressHUD
+import FirebaseAuth
 
 class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource{
     private let spinner = JGProgressHUD(style: .light)
@@ -326,7 +327,8 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         scrollView.frame = view.bounds
-        scrollView.contentSize = CGSize(width: 375, height: 600)
+        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.6)
+        scrollView.center.y = UIScreen.main.bounds.height/2
 
         // the view.width comes from the extenstions.swift file
         // the logo size
@@ -340,7 +342,7 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
 
 
         ageField.frame = CGRect(x: 30,
-                                   y: 175,
+                                   y: 128,
                                    width: scrollView.width - 60,
                                    height: 46)
 
@@ -492,6 +494,13 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
                 })
             }
         }
+        
+        results = results.filter({
+            if $0["uid"] != Auth.auth().currentUser?.uid {
+                return true
+            }
+            return false
+        })
 
         self.results = results
     }
