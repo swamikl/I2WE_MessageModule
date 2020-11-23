@@ -17,7 +17,6 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     public var completion: (([String:String]) -> Void)?
 
     private var users = [[String: String]]()
-    private var swipeList = [String]()
     private var results = [[String: String]]()
 
     private var query = [String: String]()
@@ -34,7 +33,8 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
+        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.minimumFontSize = 12
         field.placeholder = "Age"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -48,7 +48,8 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor.init(srgbRed: 211, green: 211, blue: 211, alpha: 255)
+        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.minimumFontSize = 12
         field.placeholder = "School"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -62,7 +63,8 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor.init(srgbRed: 211, green: 211, blue: 211, alpha: 255)
+        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.minimumFontSize = 12
         field.placeholder = "Gender"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -76,7 +78,8 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor.init(srgbRed: 211, green: 211, blue: 211, alpha: 255)
+        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.minimumFontSize = 12
         field.placeholder = "Sexuality"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -90,7 +93,8 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor.init(srgbRed: 211, green: 211, blue: 211, alpha: 255)
+        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.minimumFontSize = 12
         field.placeholder = "Major"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -258,6 +262,7 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         button.setTitle("Search", for: .normal)
         button.backgroundColor = .black
         button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 23
         button.layer.masksToBounds = true // so it cannot overflow
         button.titleLabel?.font = .systemFont(ofSize: 12, weight: .bold)
         return button
@@ -315,7 +320,7 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         scrollView.frame = view.bounds
-        scrollView.contentSize = CGSize(width: 375, height: 800)
+        scrollView.contentSize = CGSize(width: 375, height: 600)
 
         // the view.width comes from the extenstions.swift file
         // the logo size
@@ -331,38 +336,39 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         ageField.frame = CGRect(x: 30,
                                 y: (scrollView.width - size)/2 + 10,
                                 width: scrollView.width - 60,
-                                height: 52)
+                                height: 46)
 
         schoolField.frame = CGRect(x: 30,
                                    y: ageField.bottom+10,
                                    width: scrollView.width - 60,
-                                   height: 52)
+                                   height: 46)
         majorField.frame = CGRect(x: 30,
                                   y: schoolField.bottom+10,
                                   width: scrollView.width - 60,
-                                  height: 52)
+                                  height: 46)
 
         genderField.frame = CGRect(x: 30,
                                    y: majorField.bottom+10,
                                    width: scrollView.width - 60,
-                                   height: 52)
+                                   height: 46)
 
         sexualityField.frame = CGRect(x: 30,
                                       y: genderField.bottom+10,
                                       width: scrollView.width - 60,
-                                      height: 52)
+                                      height: 46)
 
         searchButton.frame = CGRect(x: 30,
-                                    y: sexualityField.bottom+10,
-                                    width: scrollView.width - 60,
-                                    height: 52)
+                                    y: sexualityField.bottom+26,
+                                    width: scrollView.width - 100,
+                                    height: 46)
+        searchButton.center.x = UIScreen.main.bounds.width/2
 
 
         tableView.frame = view.bounds
-        noResultsLabel.frame = CGRect(x: view.width/4,
-                                      y: (view.height-200)/2,
-                                      width: view.width/2,
-                                      height: 200)
+//        noResultsLabel.frame = CGRect(x: view.width/4,
+//                                      y: (view.height-200)/2,
+//                                      width: view.width/2,
+//                                      height: 200)
 
     }
 

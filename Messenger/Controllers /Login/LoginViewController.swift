@@ -30,9 +30,9 @@ class LoginViewController: UIViewController {
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.returnKeyType = .continue
-        field.layer.cornerRadius = 12
-        field.layer.borderWidth = 1
-        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.layer.borderWidth = 2
+        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.minimumFontSize = 12
         field.placeholder = "Email Address"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -45,10 +45,10 @@ class LoginViewController: UIViewController {
         let field = UITextField()
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
-        field.returnKeyType = .done // after writing password, we want to let users into the app
-        field.layer.cornerRadius = 12
-        field.layer.borderWidth = 1
-        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.returnKeyType = .done
+        field.layer.borderWidth = 2
+        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.minimumFontSize = 12
         field.placeholder = "Password"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -72,11 +72,11 @@ class LoginViewController: UIViewController {
     private let loginButton: UIButton = {
         let button = UIButton()
         button.setTitle("Log In", for: .normal)
-        button.backgroundColor = .systemPink
+        button.backgroundColor = .black
         button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 12
+        button.layer.cornerRadius = 23
         button.layer.masksToBounds = true // so it cannot overflow
-        button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
+        button.titleLabel?.font = .systemFont(ofSize: 12, weight: .bold)
         return button
     }()
     
@@ -155,7 +155,7 @@ class LoginViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         scrollView.frame = view.bounds
-        scrollView.contentSize = CGSize(width: 375, height: 800)
+        scrollView.contentSize = CGSize(width: 375, height: 400)
         
         // the view.width comes from the extenstions.swift file
         let size = scrollView.width/3
@@ -169,17 +169,18 @@ class LoginViewController: UIViewController {
         emailField.frame = CGRect(x: 30,
                                   y: imageView.bottom+10,
                                   width: scrollView.width - 60,
-                                  height: 52)
+                                  height: 46)
         
         passwordField.frame = CGRect(x: 30,
                                      y: emailField.bottom + 10,
                                      width: scrollView.width - 60,
-                                     height: 52)
+                                     height: 46)
         
         loginButton.frame = CGRect(x: 30,
-                                   y: passwordField.bottom + 10,
-                                   width: scrollView.width - 60,
-                                   height: 52)
+                                   y: passwordField.bottom + 26,
+                                   width: scrollView.width - 100,
+                                   height: 46)
+        loginButton.center.x = UIScreen.main.bounds.width/2
         
 //        facebookButton.frame = CGRect(x: 30,
 //                                      y: loginButton.bottom + 10,

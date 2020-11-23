@@ -29,9 +29,9 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.returnKeyType = .continue
-        field.layer.cornerRadius = 12
-        field.layer.borderWidth = 1
-        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.layer.borderWidth = 2
+        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.minimumFontSize = 12
         field.placeholder = "First Name"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -46,9 +46,9 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.returnKeyType = .continue
-        field.layer.cornerRadius = 12
-        field.layer.borderWidth = 1
-        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.layer.borderWidth = 2
+        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.minimumFontSize = 12
         field.placeholder = "Last Name"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -65,9 +65,9 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.returnKeyType = .continue
-        field.layer.cornerRadius = 12
-        field.layer.borderWidth = 1
-        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.layer.borderWidth = 2
+        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.minimumFontSize = 12
         field.placeholder = "Email Address"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -82,9 +82,9 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.returnKeyType = .done // after writing password, we want to let users into the app
-        field.layer.cornerRadius = 12
-        field.layer.borderWidth = 1
-        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.layer.borderWidth = 2
+        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.minimumFontSize = 12
         field.placeholder = "Password"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -99,9 +99,9 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         let field = UITextField()
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
-        field.layer.cornerRadius = 12
-        field.layer.borderWidth = 1
-        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.layer.borderWidth = 2
+        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.minimumFontSize = 12
         field.placeholder = "Age"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -114,9 +114,9 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         let field = UITextField()
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
-        field.layer.cornerRadius = 12
-        field.layer.borderWidth = 1
-        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.layer.borderWidth = 2
+        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.minimumFontSize = 12
         field.placeholder = "School"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -129,9 +129,9 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         let field = UITextField()
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
-        field.layer.cornerRadius = 12
-        field.layer.borderWidth = 1
-        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.layer.borderWidth = 2
+        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.minimumFontSize = 12
         field.placeholder = "Gender"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -144,9 +144,9 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         let field = UITextField()
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
-        field.layer.cornerRadius = 12
-        field.layer.borderWidth = 1
-        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.layer.borderWidth = 2
+        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.minimumFontSize = 12
         field.placeholder = "Sexuality"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -159,9 +159,9 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         let field = UITextField()
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
-        field.layer.cornerRadius = 12
-        field.layer.borderWidth = 1
-        field.layer.borderColor = UIColor.systemPink.cgColor
+        field.layer.borderWidth = 2
+        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.minimumFontSize = 12
         field.placeholder = "Major"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
@@ -320,11 +320,11 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     private let registerButton: UIButton = {
         let button = UIButton()
         button.setTitle("Register", for: .normal)
-        button.backgroundColor = .systemGreen
+        button.backgroundColor = .black
         button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 12
+        button.layer.cornerRadius = 23
         button.layer.masksToBounds = true // so it cannot overflow
-        button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
+        button.titleLabel?.font = .systemFont(ofSize: 12, weight: .bold)
         return button
     }()
     
@@ -333,11 +333,11 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         view.backgroundColor = .white
         title = "log in"
         
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Register",
-                                                            style: .done,
-                                                            target: self,
-                                                            action: #selector(didTapRegister))
+//
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Register",
+//                                                            style: .done,
+//                                                            target: self,
+//                                                            action: #selector(didTapRegister))
         
         
         
@@ -416,53 +416,54 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         firstNameField.frame = CGRect(x: 30,
                                       y: imageView.bottom+10,
                                       width: scrollView.width - 60,
-                                      height: 52)
+                                      height: 46)
         
         lastNameField.frame = CGRect(x: 30,
                                      y: firstNameField.bottom+10,
                                      width: scrollView.width - 60,
-                                     height: 52)
+                                     height: 46)
         
         ageField.frame = CGRect(x: 30,
                                 y: lastNameField.bottom+10,
                                 width: scrollView.width - 60,
-                                height: 52)
+                                height: 46)
         
         schoolField.frame = CGRect(x: 30,
                                        y: ageField.bottom+10,
                                        width: scrollView.width - 60,
-                                       height: 52)
+                                       height: 46)
         majorField.frame = CGRect(x: 30,
                                    y: schoolField.bottom+10,
                                    width: scrollView.width - 60,
-                                   height: 52)
+                                   height: 46)
         
         genderField.frame = CGRect(x: 30,
                                 y: majorField.bottom+10,
                                 width: scrollView.width - 60,
-                                height: 52)
+                                height: 46)
         
         sexualityField.frame = CGRect(x: 30,
                                     y: genderField.bottom+10,
                                     width: scrollView.width - 60,
-                                    height: 52)
+                                    height: 46)
         
         
         emailField.frame = CGRect(x: 30,
                                   y: sexualityField.bottom+10,
                                   width: scrollView.width - 60,
-                                  height: 52)
+                                  height: 46)
         
         passwordField.frame = CGRect(x: 30,
                                      y: emailField.bottom + 10,
                                      width: scrollView.width - 60,
-                                     height: 52)
+                                     height: 46)
         
         
         registerButton.frame = CGRect(x: 30,
-                                      y: passwordField.bottom + 10,
-                                      width: scrollView.width - 60,
-                                      height: 52)
+                                      y: passwordField.bottom + 26,
+                                      width: scrollView.width - 100,
+                                      height: 46)
+        registerButton.center.x = UIScreen.main.bounds.width/2
     }
     
     
