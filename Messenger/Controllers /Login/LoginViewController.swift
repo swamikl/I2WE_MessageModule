@@ -31,7 +31,7 @@ class LoginViewController: UIViewController {
         field.autocorrectionType = .no
         field.returnKeyType = .continue
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.layer.borderColor = .init(srgbRed: 255, green: 182, blue: 193, alpha: 255)
         field.minimumFontSize = 12
         field.placeholder = "Email Address"
         // to make the text not flush with the box
@@ -47,7 +47,7 @@ class LoginViewController: UIViewController {
         field.autocorrectionType = .no
         field.returnKeyType = .done
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        field.layer.borderColor = .init(srgbRed: 255, green: 182, blue: 193, alpha: 255)
         field.minimumFontSize = 12
         field.placeholder = "Password"
         // to make the text not flush with the box
@@ -158,10 +158,10 @@ class LoginViewController: UIViewController {
         scrollView.contentSize = CGSize(width: 375, height: 400)
         
         // the view.width comes from the extenstions.swift file
-        let size = scrollView.width/3
+        let size = 3*scrollView.width/5
         // the logo size
         imageView.frame = CGRect(x: (scrollView.width - size)/2,
-                                 y: 20,
+                                 y: 50,
                                  width: size,
                                  height: size)
         

@@ -30,13 +30,15 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         field.autocorrectionType = .no
         field.returnKeyType = .continue
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        // field.layer.borderColor = UIColor.systemTeal.cgColor
+        field.layer.borderColor = .init(srgbRed: 255, green: 182, blue: 193, alpha: 255)
         field.minimumFontSize = 12
         field.placeholder = "First Name"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
         field.leftViewMode = .always
         field.backgroundColor = .white
+        field.layer.cornerRadius = 12
         return field
     }()
     
@@ -47,13 +49,15 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         field.autocorrectionType = .no
         field.returnKeyType = .continue
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        // field.layer.borderColor = UIColor.systemTeal.cgColor
+        field.layer.borderColor = .init(srgbRed: 255, green: 182, blue: 193, alpha: 255)
         field.minimumFontSize = 12
         field.placeholder = "Last Name"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
         field.leftViewMode = .always
         field.backgroundColor = .white
+        field.layer.cornerRadius = 12
         return field
     }()
     
@@ -66,13 +70,15 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         field.autocorrectionType = .no
         field.returnKeyType = .continue
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        // field.layer.borderColor = UIColor.systemTeal.cgColor
+        field.layer.borderColor = .init(srgbRed: 255, green: 182, blue: 193, alpha: 255)
         field.minimumFontSize = 12
         field.placeholder = "Email Address"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
         field.leftViewMode = .always
         field.backgroundColor = .white
+        field.layer.cornerRadius = 12
         return field
     }()
     
@@ -83,7 +89,8 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         field.autocorrectionType = .no
         field.returnKeyType = .done // after writing password, we want to let users into the app
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        // field.layer.borderColor = UIColor.systemTeal.cgColor
+        field.layer.borderColor = .init(srgbRed: 255, green: 182, blue: 193, alpha: 255)
         field.minimumFontSize = 12
         field.placeholder = "Password"
         // to make the text not flush with the box
@@ -91,6 +98,7 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         field.leftViewMode = .always
         field.backgroundColor = .white
         field.isSecureTextEntry = true // to get * for password
+        field.layer.cornerRadius = 12
         return field
     }()
     
@@ -100,13 +108,15 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        // field.layer.borderColor = UIColor.systemTeal.cgColor
+        field.layer.borderColor = .init(srgbRed: 255, green: 182, blue: 193, alpha: 255)
         field.minimumFontSize = 12
         field.placeholder = "Age"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
         field.leftViewMode = .always
         field.backgroundColor = .white
+        field.layer.cornerRadius = 12
         return field
     }()
     
@@ -115,13 +125,15 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        // field.layer.borderColor = UIColor.systemTeal.cgColor
+        field.layer.borderColor = .init(srgbRed: 255, green: 182, blue: 193, alpha: 255)
         field.minimumFontSize = 12
         field.placeholder = "School"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
         field.leftViewMode = .always
         field.backgroundColor = .white
+        field.layer.cornerRadius = 12
         return field
     }()
     
@@ -130,13 +142,15 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        // field.layer.borderColor = UIColor.systemTeal.cgColor
+        field.layer.borderColor = .init(srgbRed: 255, green: 182, blue: 193, alpha: 255)
         field.minimumFontSize = 12
         field.placeholder = "Gender"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
         field.leftViewMode = .always
         field.backgroundColor = .white
+        field.layer.cornerRadius = 12
         return field
     }()
     
@@ -145,13 +159,15 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        // field.layer.borderColor = UIColor.systemTeal.cgColor
+        field.layer.borderColor = .init(srgbRed: 255, green: 182, blue: 193, alpha: 255)
         field.minimumFontSize = 12
         field.placeholder = "Sexuality"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
         field.leftViewMode = .always
         field.backgroundColor = .white
+        field.layer.cornerRadius = 12
         return field
     }()
     
@@ -160,13 +176,15 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        // field.layer.borderColor = UIColor.systemTeal.cgColor
+        field.layer.borderColor = .init(srgbRed: 255, green: 182, blue: 193, alpha: 255)
         field.minimumFontSize = 12
         field.placeholder = "Major"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
         field.leftViewMode = .always
         field.backgroundColor = .white
+        field.layer.cornerRadius = 12
         return field
     }()
     

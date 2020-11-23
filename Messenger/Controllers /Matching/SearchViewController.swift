@@ -33,13 +33,15 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        // field.layer.borderColor = UIColor.systemTeal.cgColor
+        field.layer.borderColor = .init(srgbRed: 255, green: 182, blue: 193, alpha: 255)
         field.minimumFontSize = 12
         field.placeholder = "Age"
         // to make the text not flush with the box
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
         field.leftViewMode = .always
         field.backgroundColor = .white
+        field.borderStyle = .none
         return field
     }()
 
@@ -48,7 +50,8 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        // field.layer.borderColor = UIColor.systemTeal.cgColor
+        field.layer.borderColor = .init(srgbRed: 255, green: 182, blue: 193, alpha: 255)
         field.minimumFontSize = 12
         field.placeholder = "School"
         // to make the text not flush with the box
@@ -63,7 +66,8 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        // field.layer.borderColor = UIColor.systemTeal.cgColor
+        field.layer.borderColor = .init(srgbRed: 255, green: 182, blue: 193, alpha: 255)
         field.minimumFontSize = 12
         field.placeholder = "Gender"
         // to make the text not flush with the box
@@ -78,7 +82,8 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        // field.layer.borderColor = UIColor.systemTeal.cgColor
+        field.layer.borderColor = .init(srgbRed: 255, green: 182, blue: 193, alpha: 255)
         field.minimumFontSize = 12
         field.placeholder = "Sexuality"
         // to make the text not flush with the box
@@ -93,7 +98,8 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.layer.borderWidth = 2
-        field.layer.borderColor = CGColor(gray: 0, alpha: 255)
+        // field.layer.borderColor = UIColor.systemTeal.cgColor
+        field.layer.borderColor = .init(srgbRed: 255, green: 182, blue: 193, alpha: 255)
         field.minimumFontSize = 12
         field.placeholder = "Major"
         // to make the text not flush with the box
@@ -268,13 +274,13 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         return button
     }()
 
-//    // for the logo to show
-//    private let imageView: UIImageView = {
-//        let imageView = UIImageView()
-//        imageView.image = UIImage(named: "logo_correct")
-//        imageView.contentMode = .scaleAspectFit
-//        return imageView
-//    }()
+    // for the logo to show
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "logo_correct")
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -294,7 +300,7 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
 
 
         view.addSubview(scrollView)
-//        scrollView.addSubview(imageView)
+        scrollView.addSubview(imageView)
 
         scrollView.addSubview(ageField)
 
@@ -326,17 +332,17 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         // the logo size
 
         let size = scrollView.width/3
-        // the logo size
-//        imageView.frame = CGRect(x: (scrollView.width - size)/2 + 10,
-//                                 y: 50,
-//                                 width: size,
-//                                 height: size)
+         // the logo size
+        imageView.frame = CGRect(x: (scrollView.width - size)/2 + 10,
+                                 y: 50,
+                                 width: size,
+                                 height: size)
 
 
         ageField.frame = CGRect(x: 30,
-                                y: (scrollView.width - size)/2 + 10,
-                                width: scrollView.width - 60,
-                                height: 46)
+                                   y: imageView.bottom+10,
+                                   width: scrollView.width - 60,
+                                   height: 46)
 
         schoolField.frame = CGRect(x: 30,
                                    y: ageField.bottom+10,
