@@ -342,7 +342,7 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
 
 
         ageField.frame = CGRect(x: 30,
-                                   y: 128,
+                                   y: 175,
                                    width: scrollView.width - 60,
                                    height: 46)
 
