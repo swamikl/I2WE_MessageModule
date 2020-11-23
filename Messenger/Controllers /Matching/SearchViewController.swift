@@ -275,12 +275,12 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     }()
 
     // for the logo to show
-    private let imageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "logo_correct")
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
+//    private let imageView: UIImageView = {
+//        let imageView = UIImageView()
+//        imageView.image = UIImage(named: "logo_correct")
+//        imageView.contentMode = .scaleAspectFit
+//        return imageView
+//    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -300,7 +300,7 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
 
 
         view.addSubview(scrollView)
-        scrollView.addSubview(imageView)
+        // scrollView.addSubview(imageView)
 
         scrollView.addSubview(ageField)
 
@@ -333,14 +333,14 @@ class SearchViewController: UIViewController, UIPickerViewDelegate, UIPickerView
 
         let size = scrollView.width/3
          // the logo size
-        imageView.frame = CGRect(x: (scrollView.width - size)/2 + 10,
-                                 y: 50,
-                                 width: size,
-                                 height: size)
+//        imageView.frame = CGRect(x: (scrollView.width - size)/2 + 10,
+//                                 y: 50,
+//                                 width: size,
+//                                 height: size)
 
 
         ageField.frame = CGRect(x: 30,
-                                   y: imageView.bottom+10,
+                                   y: 175,
                                    width: scrollView.width - 60,
                                    height: 46)
 
