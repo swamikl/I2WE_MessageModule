@@ -70,8 +70,8 @@ extension ResultsViewController {
     
     func setupMyShit(){
         
-//        for i in 0..<results.count {
-//            xPosition = UIScreen.main.bounds.width * CGFloat(i)
+        for i in 0..<results.count {
+            xPosition = UIScreen.main.bounds.width * CGFloat(i)
 
             // THE STUFF THAT WORKS START
             
@@ -162,13 +162,14 @@ extension ResultsViewController {
             
             // THE STUFF THAT WORKS END
             
-//            scrollView.contentSize.width = scrollView.frame.width * CGFloat(i + 1)
+            scrollView.contentSize.width = scrollView.frame.width * CGFloat(i + 1)
             scrollView.addSubview(cardView)
+            scrollView.isPagingEnabled = true
             scrollView.isUserInteractionEnabled = true
             scrollView.delegate = self
 
             self.count += 1
-//        }
+        }
         
     }
     
