@@ -164,6 +164,7 @@ extension ResultsViewController {
             
 //            scrollView.contentSize.width = scrollView.frame.width * CGFloat(i + 1)
             scrollView.addSubview(cardView)
+            scrollView.isUserInteractionEnabled = true
             scrollView.delegate = self
 
             self.count += 1
