@@ -3,7 +3,7 @@
 //  Messenger
 //
 //  Created by Jaden Kim on 11/21/20.
-//  Copyright © 2020 Swamik Lamichhane. All rights reserved.
+//  Copyright © 2020 Swamik Lamichhane and Jaden Kim. All rights reserved.
 //
 
 import UIKit
@@ -33,42 +33,12 @@ class ResultsViewController: UIViewController, UIScrollViewDelegate {
         view.backgroundColor = .white
         view.addSubview(scrollView)
         setupMyShit()
-        
-//        if results != [] {
-//
-//        } else {
-//            view.backgroundColor = .white
-//
-//            let failImg = UIImageView()
-//            failImg.frame = CGRect(x: 0, y: UIScreen.main.bounds.width/2 + 44, width: 38, height: 38)
-//            failImg.image = UIImage(systemName: "face.dashed")
-//            failImg.center.x = UIScreen.main.bounds.width/2
-//
-//            let failureView = UILabel()
-//            failureView.frame = CGRect(x: 0, y: UIScreen.main.bounds.width/2 + 82, width: UIScreen.main.bounds.width, height: 40)
-//            failureView.text = "No results"
-//            failureView.textAlignment = .center
-//
-//            view.addSubview(failImg)
-//            view.addSubview(failureView)
-//        }
+   
     }
 }
 
 extension ResultsViewController {
     
-//    setUpMyShit() {
-//
-//        let tableView: UITableView = {
-//            let table = UITableView()
-//            table.register(ConversationTableViewCell.self,
-//                                   forCellReuseIdentifier: ConversationTableViewCell.identifier)
-//            return table
-//        }()
-//
-//
-//    }
-//
     func setupMyShit() {
 
         for i in 0..<results.count {
@@ -181,54 +151,4 @@ extension ResultsViewController {
 
     }
     
-//    @objc func likeButtonTapped(sender:UIButton) {
-//
-//        if !isTapped {
-//            isTapped = true
-//            DatabaseManager.shared.swipe(with: sender.accessibilityLabel!, completion: { success in
-//                if success {
-//                    print("Good.")
-//                } else {
-//                    print("Nope.")
-//                }
-//            })
-//
-//        }
-//
-//        let animator = UIViewPropertyAnimator(duration: 0.7, dampingRatio: 0.7) {
-//            self.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
-//        }
-//        animator.startAnimation()
-//        var myEmail: String = ""
-//        var myName: String = ""
-//
-//        let database = Database.database().reference()
-//        let curUid = Auth.auth().currentUser?.uid
-//            database.child("users/\(curUid!)").observeSingleEvent(of: .value, with: { snapshot in
-//                guard let value = snapshot.value as? [String: Any] else {
-//                    return
-//                }
-//                myEmail = value[FBKeys.User.email] as! String
-//                myName = value[FBKeys.User.name] as! String
-//                return
-//            })
-//
-//            let otherEmail = DatabaseManager.safeEmail(emailAddress: results[count][FBKeys.User.email]!)
-//            let date = Date()
-//            let textDate = ChatViewController.dateFormatter.string(from: Date())
-//            let msgID = "\(otherEmail)_\(myEmail)_\(textDate)"
-//
-//            let sender = Sender(photoURL: "", senderId: myEmail, displayName: myName)
-//            let newMsg = Message(sender: sender, messageId: msgID, sentDate: date, kind: .text("I like you! Let's talk. :)"))
-//
-//            DatabaseManager.shared.sendMessage(to: "conversation_\(msgID)", otherUserEmail: otherEmail, name: results[count][FBKeys.User.name]!, newMessage: newMsg, completion: { success in
-//                if success {
-//                    print("Nice one.")
-//                } else {
-//                    print("Fuck yourself.")
-//                }
-//            })
-//
-//        }
-//    }
 }
